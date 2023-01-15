@@ -10,11 +10,15 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <stdbool.h>
+#include <dirent.h>
+#include <stdint.h>
+#include <fcntl.h>
 
 #define MAX_CLIENTS 5
 #define SORTIR 0
-#define PORT 1112
+#define PORT 1114
 #define BACK_LOG 10
+#define PATH "."
 
 typedef enum {
 	LS = 1,

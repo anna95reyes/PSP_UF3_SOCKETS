@@ -1,9 +1,13 @@
 #include "types.h"
 
+int netejar_pantalla(){
+	system("clear");
+}
+
 int get_menu () {
 	
 	int fun;
-	
+	netejar_pantalla();
 	printf("    MENU\n");
 	printf("=============\n");
 	printf("   %d - LS\n", LS);
@@ -18,10 +22,6 @@ int get_menu () {
 	scanf("%d", &fun);
 	
 	return fun;
-}
-
-int netejar_pantalla(){
-	system("clear");
 }
 
 int codi_op_ls(int sock){
@@ -106,7 +106,6 @@ int main (int argc, char **argv) {
 	}
 	
 	do {
-		//netejar_pantalla();
 		fun = get_menu();
 		printf("FUN: %d\n", fun);
 		if ((write (fd, &fun, sizeof(int))) != sizeof(int)){

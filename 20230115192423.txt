@@ -1,0 +1,13 @@
+.
+..
+.git
+20230115192423.txt
+client
+client.c
+ICB0_M9_uf3_na1_sockets.doc
+ICB0_M9_uf3_na1_sockets.pdf
+README.md
+server
+server.c
+squema_usuaris.sql
+types.h

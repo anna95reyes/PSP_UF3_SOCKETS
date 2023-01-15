@@ -16,8 +16,59 @@ int wait_process (int signum) {
 	exit(0);
 }
 
+int obtenir_data_hora_actuals(char * nom_arxiu_temporal){
+	time_t t = time(&t);
+	struct tm *local_time = localtime(&t);
+	char data_hora[30];
+	int hours, minutes, seconds, day, month, year;
+	
+	year = (*local_time).tm_year + 1900;
+	month = (*local_time).tm_mon + 1;
+	day = (*local_time).tm_mday;
+	hours = (*local_time).tm_hour;
+    minutes = (*local_time).tm_min;
+    seconds = (*local_time).tm_sec;
+ 
+	sprintf(data_hora, "%02d%02d%d%02d%02d%02d", year, month, day, hours, minutes, seconds);
+	
+	strcpy (nom_arxiu_temporal, data_hora);
+	
+	return strlen(nom_arxiu_temporal);
+}
+
 int codi_op_ls(int sock, int *data) {
-	printf("OPCIO LS\n");
+
+	DIR * carpeta;
+	struct dirent *arxiu;
+	char nom_arxiu[50];
+	char nom_arxiu_temporal[30];
+	FILE * fitxer_temporal;
+	
+	obtenir_data_hora_actuals(nom_arxiu_temporal);
+	strcat (nom_arxiu_temporal, ".txt");
+	
+	if ((fitxer_temporal = fopen(nom_arxiu_temporal, "w+")) < 0) {
+		perror("obrint arxiu temporal");
+		return -1;
+	}
+
+	carpeta = opendir(PATH);
+	if (carpeta != NULL){
+		while((arxiu = readdir(carpeta))){
+			strcpy (nom_arxiu, (*arxiu).d_name);
+			strcat (nom_arxiu, "\n");
+			printf("%s", nom_arxiu);
+			fputs(nom_arxiu, fitxer_temporal);
+			
+		}
+		fclose(fitxer_temporal);
+		closedir(carpeta);
+	}
+	
+	//remove("nom_arxiu_temporal")
+	
+	
+	
 }
 
 int codi_op_cd(int sock, int *data) {
@@ -48,17 +99,13 @@ void *atendre_client (void *data) {
 	int res;
 	int fun;
 	
-	printf("12\n");
 	do {
 		
-		printf("sock %d\n", sock);
-		printf("13\n");
 		if (read (sock, &fun, sizeof(int)) != sizeof(int)) {
 			perror("read fun");
 			return NULL;
 		}
-		printf("14\n");
-		printf("fun %d\n", fun);
+		
 		//Controla si el client esta mes actualitzat que el servidor, perque no peti
 		res = 1;
 		switch(fun) {
@@ -71,7 +118,7 @@ void *atendre_client (void *data) {
 				res = 0;
 				break;
 		}
-		printf("res %d\n", res);
+		
 		if(res == 0) {
 			switch (fun) {
 				case LS:
@@ -133,39 +180,32 @@ int main (int argc, char **argv) {
 	struct sockaddr_in server, client;
 	int sock, len, pos;
 	
-	printf("1\n");
 	inicialitzar_clients(clients);
 	
-	printf("2\n");
 	//Socket
 	if ((fd = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
 		return 1;
 	}
 	
-	printf("3\n");
 	memset(&server, 0, sizeof(server));
 	
-	printf("4\n");
 	server.sin_family = AF_INET;
 	server.sin_port = htons(PORT);
 	server.sin_addr.s_addr = INADDR_ANY; //inet_addr(clients[pos].ip);
 	
-	printf("5\n");
 	//Bind
 	if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
 		perror("bind");
 		return 1;
 	}
 	
-	printf("6\n");
 	//Listen
 	if (listen(fd, BACK_LOG) < 0) {
 		perror("listen");
 		return 1;
 	}
 	
-	printf("7\n");
 	for (;;) {
 	
 		signal(SIGINT, (void (*)(int))wait_process);
@@ -174,13 +214,11 @@ int main (int argc, char **argv) {
 		//Accept
 		len = sizeof(server);
 		
-		printf("8\n");
 		if ((sock = accept(fd, (struct sockaddr*)&client, &len)) < 0) {
 			perror("accept");
 			return 1;
 		}
 		
-		printf("9\n");
 		// Comprovacio per saber si puc atendre al client
 		pthread_mutex_lock (&mut); 
 		if (num_clients < MAX_CLIENTS) {
@@ -191,9 +229,7 @@ int main (int argc, char **argv) {
 		}
 		pthread_mutex_unlock (&mut); 
 		
-		printf("10\n");
 		if (clients[pos].estat == 1) {
-			printf("11\n");
 			pthread_create (&clients[pos].th, NULL, atendre_client, (void *)&clients[pos]);
 			pthread_detach (clients[pos].th);
 		} else {
