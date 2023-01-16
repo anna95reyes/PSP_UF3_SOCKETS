@@ -48,7 +48,7 @@ int codi_op_ls(int sock, int *data) {
 	strcat (nom_arxiu_temporal, ".txt");
 	
 	if ((fitxer_temporal = fopen(nom_arxiu_temporal, "w+")) < 0) {
-		perror("obrint arxiu temporal");
+		perror("creant arxiu temporal");
 		return -1;
 	}
 
@@ -56,16 +56,23 @@ int codi_op_ls(int sock, int *data) {
 	if (carpeta != NULL){
 		while((arxiu = readdir(carpeta))){
 			strcpy (nom_arxiu, (*arxiu).d_name);
-			strcat (nom_arxiu, "\n");
-			printf("%s", nom_arxiu);
-			fputs(nom_arxiu, fitxer_temporal);
+			if (strcmp (nom_arxiu, nom_arxiu_temporal) != 0) {
+				strcat (nom_arxiu, "\n");
+				fputs(nom_arxiu, fitxer_temporal);
+			}
+			
 			
 		}
 		fclose(fitxer_temporal);
 		closedir(carpeta);
 	}
 	
-	//remove("nom_arxiu_temporal")
+	if (write (sock, &nom_arxiu_temporal, sizeof(nom_arxiu_temporal)) != sizeof(nom_arxiu_temporal)){
+		perror("write name file nom_arxiu_temporal");
+		return -1;
+	}
+	
+	
 	
 	
 	

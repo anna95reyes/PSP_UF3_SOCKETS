@@ -7,8 +7,8 @@ int netejar_pantalla(){
 int get_menu () {
 	
 	int fun;
-	netejar_pantalla();
-	printf("    MENU\n");
+	
+	printf("\n    MENU\n");
 	printf("=============\n");
 	printf("   %d - LS\n", LS);
 	printf("   %d - CD\n", CD);
@@ -26,8 +26,31 @@ int get_menu () {
 
 int codi_op_ls(int sock){
 
+	char nom_arxiu_temporal[30];
+	FILE * fitxer_temporal;
+	char llinea_llegida[255];
+
 	netejar_pantalla();
-	printf("OPCIO LS\n");
+	if (read (sock, &nom_arxiu_temporal, sizeof(nom_arxiu_temporal)) != sizeof(nom_arxiu_temporal)) {
+		perror("read fun");
+		return 1;
+	}
+	
+	if ((fitxer_temporal = fopen(nom_arxiu_temporal, "r+")) < 0) {
+		perror("obrint arxiu temporal");
+		return -1;
+	}
+	
+	while (fscanf(fitxer_temporal, "%[^\n] ", llinea_llegida) != EOF) {
+		printf("%s\n", llinea_llegida);
+	}
+	
+	fclose(fitxer_temporal);
+	if (remove(nom_arxiu_temporal) < 0) {
+		perror("esborrant arxiu temporal");
+		return -1;
+	}
+	
 }
 
 int codi_op_cd(int sock){
@@ -35,7 +58,6 @@ int codi_op_cd(int sock){
 	char path[255];
 
 	netejar_pantalla();
-	printf("OPCIO CD\n");
 	printf("PATH: ");
 	scanf("%s", path);
 	printf("%s\n", path);
@@ -46,7 +68,6 @@ int codi_op_mkdir(int sock){
 	char recurs[255];
 
 	netejar_pantalla();
-	printf("OPCIO MKDIR\n");
 	printf("RECURS: ");
 	scanf("%s", recurs);
 	printf("%s\n", recurs);
@@ -57,7 +78,6 @@ int codi_op_get(int sock){
 	char recurs[255];
 	
 	netejar_pantalla();
-	printf("OPCIO GET\n");
 	printf("RECURS: ");
 	scanf("%s", recurs);
 	printf("%s\n", recurs);
@@ -66,7 +86,6 @@ int codi_op_get(int sock){
 int codi_op_whoami(int sock){
 
 	netejar_pantalla();
-	printf("OPCIO WHOAMI\n");
 }
 
 int codi_op_stat(int sock){
@@ -74,7 +93,6 @@ int codi_op_stat(int sock){
 	char recurs[255];
 	
 	netejar_pantalla();
-	printf("OPCIO STAT\n");
 	printf("RECURS: ");
 	scanf("%s", recurs);
 	printf("%s\n", recurs);
@@ -87,10 +105,12 @@ int main (int argc, char **argv) {
 	int fd, sock;
 	int fun;
 	
+	netejar_pantalla();
+	
 	//Socket
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
-		return 1;
+		return -1;
 	}
 	
 	memset(&client, 0, sizeof(client));
@@ -107,8 +127,8 @@ int main (int argc, char **argv) {
 	
 	do {
 		fun = get_menu();
-		printf("FUN: %d\n", fun);
 		if ((write (fd, &fun, sizeof(int))) != sizeof(int)){
+			perror("write fun");
 			return -1;
 		}
 		switch (fun) {
@@ -133,6 +153,7 @@ int main (int argc, char **argv) {
 			case EXIT:
 				break;
 		}
+		
 	} while (fun != EXIT);
 	
 	close(fd);
