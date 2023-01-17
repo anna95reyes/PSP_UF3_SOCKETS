@@ -8,7 +8,8 @@ int get_menu () {
 	
 	int fun;
 	
-	printf("\n    MENU\n");
+	netejar_pantalla();
+	printf("    MENU\n");
 	printf("=============\n");
 	printf("   %d - LS\n", LS);
 	printf("   %d - CD\n", CD);
@@ -105,8 +106,6 @@ int main (int argc, char **argv) {
 	int fd, sock;
 	int fun;
 	
-	netejar_pantalla();
-	
 	//Socket
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
@@ -152,6 +151,11 @@ int main (int argc, char **argv) {
 				break;
 			case EXIT:
 				break;
+		}
+		
+		if (fun != EXIT) {
+			__fpurge(stdin);
+			getchar();
 		}
 		
 	} while (fun != EXIT);

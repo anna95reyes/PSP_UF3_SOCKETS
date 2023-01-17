@@ -3,6 +3,7 @@
 int num_clients = 0;
 int fd;
 pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
+char path_relatiu[255] = PATH;
 
 typedef struct {
 	int socket; //socket que aten al client
@@ -122,6 +123,7 @@ void *atendre_client (void *data) {
 			case GET:
 			case WHOAMI:
 			case STAT:
+			case EXIT:
 				res = 0;
 				break;
 		}
@@ -150,7 +152,7 @@ void *atendre_client (void *data) {
 					break;
 			}
 		} else {
-			printf("Funcionalitat no implementada en el servidor");
+			printf("Funcionalitat no implementada en el servidor\n");
 		}
 		
 	} while (fun != EXIT);

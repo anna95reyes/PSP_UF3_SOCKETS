@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdio_ext.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sys/wait.h>
@@ -16,7 +17,7 @@
 
 #define MAX_CLIENTS 5
 #define SORTIR 0
-#define PORT 1116
+#define PORT 1118
 #define BACK_LOG 10
 #define PATH "."
 
