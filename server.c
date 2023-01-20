@@ -3,7 +3,7 @@
 int num_clients = 0;
 int fd;
 pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
-char path_relatiu[255] = PATH;
+char path_relatiu[255] = PATH_SERVER;
 
 typedef struct {
 	int socket; //socket que aten al client
@@ -15,6 +15,12 @@ typedef struct {
 int wait_process (int signum) {
 	close(fd);
 	exit(0);
+}
+
+void construir_ruta (char * ruta_desti, char * path, char * ruta_origen) {
+	strcpy (ruta_desti, path);
+	strcat(ruta_desti, "/");
+	strcat(ruta_desti, ruta_origen);
 }
 
 int obtenir_data_hora_actuals(char * nom_arxiu_temporal){
@@ -45,15 +51,16 @@ int codi_op_ls(int sock, int *data) {
 	char nom_arxiu_temporal[30];
 	FILE * fitxer_temporal;
 	
+	
 	obtenir_data_hora_actuals(nom_arxiu_temporal);
 	strcat (nom_arxiu_temporal, ".txt");
 	
 	if ((fitxer_temporal = fopen(nom_arxiu_temporal, "w+")) < 0) {
-		perror("creant arxiu temporal");
+		perror("ERROR: creant arxiu temporal");
 		return -1;
 	}
 
-	carpeta = opendir(PATH);
+	carpeta = opendir(path_relatiu);
 	if (carpeta != NULL){
 		while((arxiu = readdir(carpeta))){
 			strcpy (nom_arxiu, (*arxiu).d_name);
@@ -69,13 +76,9 @@ int codi_op_ls(int sock, int *data) {
 	}
 	
 	if (write (sock, &nom_arxiu_temporal, sizeof(nom_arxiu_temporal)) != sizeof(nom_arxiu_temporal)){
-		perror("write name file nom_arxiu_temporal");
+		perror("ERROR: write name file nom_arxiu_temporal");
 		return -1;
 	}
-	
-	
-	
-	
 	
 }
 
@@ -84,10 +87,64 @@ int codi_op_cd(int sock, int *data) {
 }
 
 int codi_op_mkdir(int sock, int *data) {
+
+	char nom_directori[255];
+	int error;
+	char directori[255];
+
+	if (read (sock, &nom_directori, sizeof(nom_directori)) != sizeof(nom_directori)) {
+		perror("ERROR: read nom directori");
+		return 1;
+	}
+	
+	construir_ruta (directori, path_relatiu, nom_directori);
+	
+	error = mkdir(directori, 0777);
+	
+	if (write (sock, &error, sizeof(int)) != sizeof(int)){
+		perror("ERROR: mkdir");
+		return -1;
+	}
+	
+	if (error < 0) {
+		perror("ERROR: mkdir directori");
+		return -1;
+	}
 	
 }
 
 int codi_op_get(int sock, int *data) {
+	
+	DIR * carpeta;
+	struct dirent *arxiu;
+	char nom_arxiu_server[255];
+	char nom_arxiu_peticio[255];
+	int error;
+	bool trobat = false;
+	
+
+	if (read (sock, &nom_arxiu_peticio, sizeof(nom_arxiu_peticio)) != sizeof(nom_arxiu_peticio)) {
+		perror("ERROR: read nom directori");
+		return 1;
+	}
+	
+	carpeta = opendir(path_relatiu);
+	if (carpeta != NULL){
+		while((arxiu = readdir(carpeta))){
+			strcpy (nom_arxiu_server, (*arxiu).d_name);
+			if (strcmp (nom_arxiu_server, nom_arxiu_peticio) == 0) {
+				trobat = true;
+			}
+			
+			
+		}
+		closedir(carpeta);
+	}
+	
+	if (write (sock, &trobat, sizeof(bool)) != sizeof(bool)){
+		perror("ERROR: write arxiu trobat");
+		return -1;
+	}
 	
 }
 
@@ -110,7 +167,7 @@ void *atendre_client (void *data) {
 	do {
 		
 		if (read (sock, &fun, sizeof(int)) != sizeof(int)) {
-			perror("read fun");
+			perror("ERROR: read fun");
 			return NULL;
 		}
 		
@@ -123,7 +180,6 @@ void *atendre_client (void *data) {
 			case GET:
 			case WHOAMI:
 			case STAT:
-			case EXIT:
 				res = 0;
 				break;
 		}
@@ -152,7 +208,9 @@ void *atendre_client (void *data) {
 					break;
 			}
 		} else {
-			printf("Funcionalitat no implementada en el servidor\n");
+			if (fun != EXIT) {
+				printf("Funcionalitat no implementada en el servidor\n");
+			}
 		}
 		
 	} while (fun != EXIT);
@@ -193,7 +251,7 @@ int main (int argc, char **argv) {
 	
 	//Socket
 	if ((fd = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
-		perror("socket");
+		perror("ERROR: socket");
 		return 1;
 	}
 	
@@ -205,13 +263,13 @@ int main (int argc, char **argv) {
 	
 	//Bind
 	if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
-		perror("bind");
+		perror("ERROR: bind");
 		return 1;
 	}
 	
 	//Listen
 	if (listen(fd, BACK_LOG) < 0) {
-		perror("listen");
+		perror("ERROR: listen");
 		return 1;
 	}
 	
@@ -224,7 +282,7 @@ int main (int argc, char **argv) {
 		len = sizeof(server);
 		
 		if ((sock = accept(fd, (struct sockaddr*)&client, &len)) < 0) {
-			perror("accept");
+			perror("ERROR: accept");
 			return 1;
 		}
 		

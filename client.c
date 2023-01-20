@@ -4,6 +4,12 @@ int netejar_pantalla(){
 	system("clear");
 }
 
+void construir_ruta (char * ruta_desti, char * path, char * ruta_origen) {
+	strcpy (ruta_desti, path);
+	strcat(ruta_desti, "/");
+	strcat(ruta_desti, ruta_origen);
+}
+
 int get_menu () {
 	
 	int fun;
@@ -33,7 +39,7 @@ int codi_op_ls(int sock){
 
 	netejar_pantalla();
 	if (read (sock, &nom_arxiu_temporal, sizeof(nom_arxiu_temporal)) != sizeof(nom_arxiu_temporal)) {
-		perror("read fun");
+		perror("read nom_arxiu_temporal");
 		return 1;
 	}
 	
@@ -66,22 +72,85 @@ int codi_op_cd(int sock){
 
 int codi_op_mkdir(int sock){
 
-	char recurs[255];
+	char nom_directori[255];
+	char directori_correcte = 'n';
+	int error;
 
 	netejar_pantalla();
-	printf("RECURS: ");
-	scanf("%s", recurs);
-	printf("%s\n", recurs);
+	
+	do {
+		printf("Nom del direcoti a creaer: ");
+		scanf("%s", nom_directori);
+		printf("El nom del directori a crear es: \"%s\", es correcte? (s/n): ", nom_directori);
+		__fpurge(stdin);
+		scanf("%c", &directori_correcte);
+	} while (directori_correcte != 's');
+	
+	if (write (sock, &nom_directori, sizeof(nom_directori)) != sizeof(nom_directori)){
+		perror("ERROR: write nom directori");
+		return -1;
+	}
+	
+	if (read (sock, &error, sizeof(int)) != sizeof(int)){
+		perror("ERROR: mkdir");
+		return -1;
+	}
+	
+	if (error == 0) {
+		printf("Directori creat correctament\n");
+	} else {
+		perror("ERROR: El directori ja existeix");
+	}
 }
 
 int codi_op_get(int sock){
 
-	char recurs[255];
-	
+	char nom_arxiu[255];
+	char directori_nom_arxiu[255];
+	char arxiu_correcte = 'n';
+	int error;
+	bool trobat;
+	FILE * arxiu;
+
 	netejar_pantalla();
-	printf("RECURS: ");
-	scanf("%s", recurs);
-	printf("%s\n", recurs);
+	
+	do {
+		printf("Nom del arxiu amb la extensio: ");
+		scanf("%s", nom_arxiu);
+		printf("El nom del arxiu es: \"%s\", es correcte? (s/n): ", nom_arxiu);
+		__fpurge(stdin);
+		scanf("%c", &arxiu_correcte);
+	} while (arxiu_correcte != 's');
+	
+	if (write (sock, &nom_arxiu, sizeof(nom_arxiu)) != sizeof(nom_arxiu)){
+		perror("ERROR: write nom arxiu");
+		return -1;
+	}
+	
+	if (read (sock, &trobat, sizeof(bool)) != sizeof(bool)){
+		perror("ERROR: read arxiu trobat");
+		return -1;
+	}
+	
+	if (trobat) {
+		construir_ruta (directori_nom_arxiu, PATH_CLIENT, nom_arxiu);
+		
+		printf("Directori: %s\n", directori_nom_arxiu);
+		
+		if ((arxiu = fopen(directori_nom_arxiu, "w+")) < 0) {
+			perror("creant arxiu");
+			return -1;
+		}
+		
+		//TODO: queda llegir el arxiu del servidor i transferir-lo al client
+		
+		fclose(arxiu);
+	
+	} else {
+		perror("ERROR: l'arxiu no existeix");
+	}
+	
+	
 }
 
 int codi_op_whoami(int sock){
@@ -108,7 +177,7 @@ int main (int argc, char **argv) {
 	
 	//Socket
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		perror("socket");
+		perror("ERROR: socket");
 		return -1;
 	}
 	
@@ -120,14 +189,14 @@ int main (int argc, char **argv) {
 	
 	//Connect
 	if ((sock = connect(fd, (struct sockaddr *)&client, sizeof(client))) < 0) {
-		perror("connect");
+		perror("ERROR: connect");
 		return 0;
 	}
 	
 	do {
 		fun = get_menu();
 		if ((write (fd, &fun, sizeof(int))) != sizeof(int)){
-			perror("write fun");
+			perror("ERROR: write fun");
 			return -1;
 		}
 		switch (fun) {
