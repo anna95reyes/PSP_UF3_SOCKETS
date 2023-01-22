@@ -17,11 +17,11 @@
 
 #define MAX_CLIENTS 5
 #define SORTIR 0
-#define PORT 1113
+#define PORT 1111
 #define BACK_LOG 10
-#define PATH "."
-#define PATH_SERVER "./directori_server"
-#define PATH_CLIENT "./directori_client"
+#define PATH "/mnt/hgfs/UF3/1_Sockets/Practica"
+#define PATH_SERVER "/mnt/hgfs/UF3/1_Sockets/Practica/directori_server"
+#define PATH_CLIENT "/mnt/hgfs/UF3/1_Sockets/Practica/directori_client"
 
 typedef enum {
 	LS = 1,

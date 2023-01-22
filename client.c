@@ -1,5 +1,7 @@
 #include "types.h"
 
+char path_relatiu[255];
+
 int netejar_pantalla(){
 	system("clear");
 }
@@ -36,6 +38,7 @@ int codi_op_ls(int sock){
 	char nom_arxiu_temporal[30];
 	FILE * fitxer_temporal;
 	char llinea_llegida[255];
+	char path_nom_arxiu_temporal[255];
 
 	netejar_pantalla();
 	if (read (sock, &nom_arxiu_temporal, sizeof(nom_arxiu_temporal)) != sizeof(nom_arxiu_temporal)) {
@@ -43,7 +46,9 @@ int codi_op_ls(int sock){
 		return 1;
 	}
 	
-	if ((fitxer_temporal = fopen(nom_arxiu_temporal, "r+")) < 0) {
+	construir_ruta (path_nom_arxiu_temporal, PATH, nom_arxiu_temporal);
+	
+	if ((fitxer_temporal = fopen(path_nom_arxiu_temporal, "r+")) < 0) {
 		perror("obrint arxiu temporal");
 		return -1;
 	}
@@ -53,7 +58,7 @@ int codi_op_ls(int sock){
 	}
 	
 	fclose(fitxer_temporal);
-	if (remove(nom_arxiu_temporal) < 0) {
+	if (remove(path_nom_arxiu_temporal) < 0) {
 		perror("esborrant arxiu temporal");
 		return -1;
 	}
@@ -63,11 +68,42 @@ int codi_op_ls(int sock){
 int codi_op_cd(int sock){
 	
 	char path[255];
+	char path_correcte = 'n';
+	int error;
+
 
 	netejar_pantalla();
-	printf("PATH: ");
-	scanf("%s", path);
-	printf("%s\n", path);
+	do {
+		printf("Path: ");
+		scanf("%s", path);
+		printf("El path es: \"%s\", es correcte? (s/n): ", path);
+		__fpurge(stdin);
+		scanf("%c", &path_correcte);
+	} while (path_correcte != 's');
+	
+	if (write (sock, &path, sizeof(path)) != sizeof(path)){
+		perror("ERROR: write path");
+		return -1;
+	}
+	
+	if (read (sock, &path_relatiu, sizeof(path_relatiu)) != sizeof(path_relatiu)){
+		perror("ERROR: read path_relatiu");
+		return -1;
+	}
+	
+	if (read (sock, &error, sizeof(error)) != sizeof(error)){
+		perror("ERROR: write path_relatiu");
+		return -1;
+	}
+	
+	if (error >= 0) {
+		printf("PATH ACTUAL: %s\n", path_relatiu);
+	} else {
+		perror("ERROR: path erroni");
+		return -1;
+	}
+	
+	
 }
 
 int codi_op_mkdir(int sock){
@@ -111,6 +147,9 @@ int codi_op_get(int sock){
 	int error;
 	bool trobat;
 	FILE * arxiu;
+	long size_arxiu;
+	long size_llegit = 0;
+	char text[255];
 
 	netejar_pantalla();
 	
@@ -135,14 +174,28 @@ int codi_op_get(int sock){
 	if (trobat) {
 		construir_ruta (directori_nom_arxiu, PATH_CLIENT, nom_arxiu);
 		
-		printf("Directori: %s\n", directori_nom_arxiu);
-		
 		if ((arxiu = fopen(directori_nom_arxiu, "w+")) < 0) {
 			perror("creant arxiu");
 			return -1;
 		}
 		
-		//TODO: queda llegir el arxiu del servidor i transferir-lo al client
+		if (read (sock, &size_arxiu, sizeof(long)) != sizeof(long)){
+			perror("ERROR: read arxiu trobat");
+			return -1;
+		}
+		
+		while (size_llegit < size_arxiu) {
+			if (read (sock, &text, sizeof(text)) != sizeof(text)){
+				perror("ERROR: read arxiu trobat");
+				return -1;
+			}
+			fputs (text, arxiu);
+			size_llegit += sizeof(text);
+		}
+		
+		if (size_llegit >= size_arxiu) {
+			printf("Arxiu \"%s\" transferit correctament\n", nom_arxiu);
+		}
 		
 		fclose(arxiu);
 	

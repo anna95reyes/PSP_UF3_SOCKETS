@@ -43,19 +43,43 @@ int obtenir_data_hora_actuals(char * nom_arxiu_temporal){
 	return strlen(nom_arxiu_temporal);
 }
 
+long get_file_size(char *filename) {
+
+    FILE *fp = fopen(filename, "rb");
+
+	if (fp==NULL)
+	    return -1;
+
+	if (fseek(fp, 0L, SEEK_END) < 0) {
+		perror("ERROR: llegint arxiu\n");
+	    fclose(fp);
+	    return -1;
+	}
+
+	long size = ftell(fp);
+	fclose(fp);
+		
+    return size;
+}
+
+
 int codi_op_ls(int sock, int *data) {
 
 	DIR * carpeta;
 	struct dirent *arxiu;
 	char nom_arxiu[50];
 	char nom_arxiu_temporal[30];
+	char path_nom_arxiu_temporal[255];
 	FILE * fitxer_temporal;
 	
 	
 	obtenir_data_hora_actuals(nom_arxiu_temporal);
 	strcat (nom_arxiu_temporal, ".txt");
 	
-	if ((fitxer_temporal = fopen(nom_arxiu_temporal, "w+")) < 0) {
+	
+	construir_ruta (path_nom_arxiu_temporal, PATH, nom_arxiu_temporal);
+	
+	if ((fitxer_temporal = fopen(path_nom_arxiu_temporal, "w+")) < 0) {
 		perror("ERROR: creant arxiu temporal");
 		return -1;
 	}
@@ -84,6 +108,43 @@ int codi_op_ls(int sock, int *data) {
 
 int codi_op_cd(int sock, int *data) {
 	
+	char path[255];
+	char path_anterior[255];
+	int error;
+	
+	if (read (sock, &path, sizeof(path)) != sizeof(path)){
+		perror("ERROR: read path");
+		return -1;
+	}
+	
+	strcpy (path_anterior, path_relatiu);
+	
+	if (path[0] == '/') {
+		strcpy (path_relatiu, path);
+	} else {
+		construir_ruta (path_relatiu, path_relatiu, path);
+	}
+	
+	if (write (sock, &path_relatiu, sizeof(path_relatiu)) != sizeof(path_relatiu)){
+		perror("ERROR: write path_relatiu");
+		return -1;
+	}
+	
+	error = chdir(path_relatiu);
+	if (error < 0) {
+    	perror("ERROR: chdir");
+    	strcpy (path_relatiu, path_anterior);
+    	if (write (sock, &error, sizeof(error)) != sizeof(error)){
+			perror("ERROR: write path_relatiu");
+		}
+    	return -1;
+    }
+    
+    if (write (sock, &error, sizeof(error)) != sizeof(error)){
+		perror("ERROR: write path_relatiu");
+	}
+    
+    
 }
 
 int codi_op_mkdir(int sock, int *data) {
@@ -121,6 +182,11 @@ int codi_op_get(int sock, int *data) {
 	char nom_arxiu_peticio[255];
 	int error;
 	bool trobat = false;
+	FILE * file;
+	char directori_nom_arxiu[255];
+	long size_arxiu;
+	long size_llegit = 0;
+	char text[255];
 	
 
 	if (read (sock, &nom_arxiu_peticio, sizeof(nom_arxiu_peticio)) != sizeof(nom_arxiu_peticio)) {
@@ -131,12 +197,10 @@ int codi_op_get(int sock, int *data) {
 	carpeta = opendir(path_relatiu);
 	if (carpeta != NULL){
 		while((arxiu = readdir(carpeta))){
-			strcpy (nom_arxiu_server, (*arxiu).d_name);
-			if (strcmp (nom_arxiu_server, nom_arxiu_peticio) == 0) {
+			if (strcmp ((*arxiu).d_name, nom_arxiu_peticio) == 0) {
+				strcpy (nom_arxiu_server, (*arxiu).d_name);
 				trobat = true;
 			}
-			
-			
 		}
 		closedir(carpeta);
 	}
@@ -144,6 +208,35 @@ int codi_op_get(int sock, int *data) {
 	if (write (sock, &trobat, sizeof(bool)) != sizeof(bool)){
 		perror("ERROR: write arxiu trobat");
 		return -1;
+	}
+	
+	if (trobat) {
+		
+		construir_ruta (directori_nom_arxiu, PATH_SERVER, nom_arxiu_server);
+	
+		size_arxiu =  get_file_size(directori_nom_arxiu);
+		
+		if (write (sock, &size_arxiu, sizeof(long)) != sizeof(long)){
+			perror("ERROR: write arxiu trobat");
+			return -1;
+		}
+		
+		if ((file = fopen(directori_nom_arxiu, "rb")) < 0) {
+			perror("llegint arxiu");
+			return -1;
+		}
+		
+		while (size_llegit < size_arxiu) {
+			fgets (text, sizeof(text), file);
+			if (write (sock, &text, sizeof(text)) != sizeof(text)){
+				perror("ERROR: write arxiu trobat");
+				return -1;
+			}
+			size_llegit += sizeof(text);
+		}
+		
+		
+		
 	}
 	
 }
