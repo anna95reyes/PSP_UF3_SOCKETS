@@ -69,6 +69,8 @@ int codi_op_cd(int sock){
 	
 	char path[255];
 	char path_correcte = 'n';
+	char path_absolut[255];
+	
 	int error;
 
 
@@ -97,7 +99,11 @@ int codi_op_cd(int sock){
 	}
 	
 	if (error >= 0) {
-		printf("PATH ACTUAL: %s\n", path_relatiu);
+		if (read (sock, &path_absolut, sizeof(path_absolut)) != sizeof(path_absolut)){
+			perror("ERROR: write path_absolut");
+		}
+		printf("PATH ACTUAL: %s\n", path_absolut);
+		
 	} else {
 		perror("ERROR: path erroni");
 		return -1;

@@ -111,6 +111,8 @@ int codi_op_cd(int sock, int *data) {
 	char path[255];
 	char path_anterior[255];
 	int error;
+	char * res;
+	char path_absolut[255];
 	
 	if (read (sock, &path, sizeof(path)) != sizeof(path)){
 		perror("ERROR: read path");
@@ -137,13 +139,23 @@ int codi_op_cd(int sock, int *data) {
     	if (write (sock, &error, sizeof(error)) != sizeof(error)){
 			perror("ERROR: write path_relatiu");
 		}
+		printf("PATH ACTUAL: %s\n", path_relatiu);
     	return -1;
+    } else {
+    	if (write (sock, &error, sizeof(error)) != sizeof(error)){
+			perror("ERROR: write path_relatiu");
+		}
+		res = realpath(path_relatiu, path_absolut);
+		if (write (sock, &path_absolut, sizeof(path_absolut)) != sizeof(path_absolut)){
+			perror("ERROR: write path_absolut");
+		}
+		strcpy (path_relatiu, path_absolut);
+		printf("PATH ACTUAL: %s\n", path_relatiu);
     }
     
-    if (write (sock, &error, sizeof(error)) != sizeof(error)){
-		perror("ERROR: write path_relatiu");
-	}
     
+	
+	
     
 }
 
