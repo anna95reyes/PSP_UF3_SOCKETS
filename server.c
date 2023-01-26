@@ -153,10 +153,6 @@ int codi_op_cd(int sock, int *data) {
 		printf("PATH ACTUAL: %s\n", path_relatiu);
     }
     
-    
-	
-	
-    
 }
 
 int codi_op_mkdir(int sock, int *data) {
@@ -257,7 +253,84 @@ int codi_op_whoami(int sock, int *data) {
 	
 }
 
+int isFileOrDirectory(char* recurs) {
+    DIR* carpeta;
+    struct dirent *arxiu;
+	char path_recurs[255];
+
+
+	construir_ruta (path_recurs, PATH_SERVER, recurs);
+	
+	carpeta = opendir(path_recurs);
+    if(carpeta != NULL) {
+     	closedir(carpeta);
+     	return 0; //Directori
+    } else {
+    	carpeta = opendir(PATH_SERVER);
+		if (carpeta != NULL){
+			while((arxiu = readdir(carpeta))){
+				if (strcmp ((*arxiu).d_name, recurs) == 0) {
+					return 1; //Arxiu
+				}
+			}
+			closedir(carpeta);
+		}
+    }
+
+    return -1; //Recurs no trobat
+}
+
+int get_directory_size(char *path) {
+
+    DIR* carpeta;
+    struct dirent *arxiu;
+    int size = 0;
+		
+	carpeta = opendir(path);
+	if (carpeta != NULL){
+		while((arxiu = readdir(carpeta))){
+			printf("%s - %hu\n", (*arxiu).d_name, (*arxiu).d_reclen);
+			size += (*arxiu).d_reclen;
+		}
+		closedir(carpeta);
+	}
+		
+    return size;
+}
+
 int codi_op_stat(int sock, int *data) {
+	
+	char recurs[255];
+	int tipus_recurs;
+	char path_recurs[255];
+	int mida;
+	struct stat *buf; 
+	
+	if (read (sock, &recurs, sizeof(recurs)) != sizeof(recurs)){
+		perror("ERROR: read recurs");
+		return -1;
+	}
+	
+	tipus_recurs = isFileOrDirectory(recurs);
+	
+	if (write (sock, &tipus_recurs, sizeof(tipus_recurs)) != sizeof(tipus_recurs)){
+		perror("ERROR: write tipus_recurs");
+		return -1;
+	}
+	
+	construir_ruta (path_recurs, PATH_SERVER, recurs);
+	if (tipus_recurs != -1) {
+	
+		if (tipus_recurs == 1) {
+			mida = get_file_size(path_recurs);
+			if (write (sock, &mida, sizeof(mida)) != sizeof(mida)){
+				perror("ERROR: write mida");
+				return -1;
+			}
+		}
+		
+	}
+	
 	
 }
 
@@ -265,7 +338,6 @@ void *atendre_client (void *data) {
 	
 	t_client *client = (t_client *)data;
 	int sock = (*client).socket;
-	//e_fun fun;
 	int res;
 	int fun;
 	

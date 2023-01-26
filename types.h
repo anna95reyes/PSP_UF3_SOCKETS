@@ -16,21 +16,18 @@
 #include <fcntl.h>
 
 #define MAX_CLIENTS 5
-#define SORTIR 0
-#define PORT 1113
+#define PORT 1115
 #define BACK_LOG 10
 #define PATH "/mnt/hgfs/UF3/1_Sockets/Practica"
 #define PATH_SERVER "/mnt/hgfs/UF3/1_Sockets/Practica/directori_server"
 #define PATH_CLIENT "/mnt/hgfs/UF3/1_Sockets/Practica/directori_client"
 
-typedef enum {
-	LS = 1,
-	CD = 2,
-	MKDIR = 3,
-	GET = 4,
-	WHOAMI = 5,
-	STAT = 6,
-	EXIT = SORTIR
-} e_fun;
+#define EXIT 0
+#define LS 1
+#define CD 2
+#define MKDIR 3
+#define GET 4
+#define WHOAMI 5
+#define STAT 6
 
 

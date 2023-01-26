@@ -220,16 +220,55 @@ int codi_op_whoami(int sock){
 int codi_op_stat(int sock){
 
 	char recurs[255];
+	char recurs_correcte = 'n';
+	int tipus_recurs;
+	int mida;
 	
 	netejar_pantalla();
-	printf("RECURS: ");
-	scanf("%s", recurs);
-	printf("%s\n", recurs);
+	
+	do {
+		printf("Nom del recurs: ");
+		scanf("%s", recurs);
+		printf("El recurs es: \"%s\", es correcte? (s/n): ", recurs);
+		__fpurge(stdin);
+		scanf("%c", &recurs_correcte);
+	} while (recurs_correcte != 's');
+	
+	if (write (sock, &recurs, sizeof(recurs)) != sizeof(recurs)){
+		perror("ERROR: write recurs");
+		return -1;
+	}
+	
+	if (read (sock, &tipus_recurs, sizeof(tipus_recurs)) != sizeof(tipus_recurs)){
+		perror("ERROR: read tipus_recurs");
+		return -1;
+	}
+	
+	if (tipus_recurs != -1) {
+		
+		printf("Tipus: ");
+		if (tipus_recurs == 0){
+			printf("Directori\n");
+		} else {
+			printf("Arxiu\n");
+			
+			if (read (sock, &mida, sizeof(mida)) != sizeof(mida)){
+				perror("ERROR: read mida");
+				return -1;
+			}
+			
+			printf("Mida: %d\n", mida);
+			
+		}
+		
+	} else {
+		printf("Recurs no trobat");
+	}
+	
 }
 
 int main (int argc, char **argv) {
 	
-	//e_fun fun;
 	struct sockaddr_in client;
 	int fd, sock;
 	int fun;
