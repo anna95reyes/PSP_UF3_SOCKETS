@@ -14,6 +14,7 @@
 #include <dirent.h>
 #include <stdint.h>
 #include <fcntl.h>
+#include <mysql/mysql.h>
 
 #define MAX_CLIENTS 5
 #define PORT 1115

@@ -9,6 +9,7 @@ typedef struct {
 	int socket; //socket que aten al client
 	pthread_t th; //thread que aten al client
 	int estat; //saber en quin estat esta la cela per saber si es poden atendre mes clients
+	char login[45];
 } t_client;
 
 
@@ -60,6 +61,44 @@ long get_file_size(char *filename) {
 	fclose(fp);
 		
     return size;
+}
+
+int consulta_usuaris_mysql(char * usuari, char * contrasenya){
+	
+	MYSQL * conn; //variable de conexión para MySQL
+	MYSQL_RES *res; //variable que contendra el resultado de la consuta
+	MYSQL_ROW row; //variable que contendra los campos por cada registro consultado
+	char *server = "localhost";
+	char *user = "root";
+	char *password = "Alumne1_";
+	char *database = "psp";
+	
+	conn = mysql_init(NULL); //inicializacion a nula la conexión 
+	
+	//connectar a la base de dades
+	if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0)){ // definir los parámetros de la conexión antes establecidos
+		fprintf(stderr, "%s\n", mysql_error(conn)); // si hay un error definir cual fue dicho error
+		exit(1);
+	}
+	
+	// enviar consulta SQL
+	if (mysql_query(conn, "select * from usuari")) { // definicion de la consulta y el origen de la conexion
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		exit(1);
+	}
+	
+	res = mysql_use_result(conn);
+	while ((row = mysql_fetch_row(res)) != NULL) { // recorrer la variable res con todos los registros obtenidos para su uso
+		if (strcmp (usuari, row[1]) == 0 && strcmp (contrasenya, row[2]) == 0) {
+			return 1;
+		}
+	}
+	
+	// se libera la variable res y se cierra la conexión
+	mysql_free_result(res);
+	mysql_close(conn);
+	
+	return 0;
 }
 
 
@@ -251,6 +290,8 @@ int codi_op_get(int sock, int *data) {
 
 int codi_op_whoami(int sock, int *data) {
 	
+	
+	
 }
 
 int isFileOrDirectory(char* recurs) {
@@ -340,57 +381,87 @@ void *atendre_client (void *data) {
 	int sock = (*client).socket;
 	int res;
 	int fun;
+	int login_correcte;
+	char usuari[45];
+	char contrasenya[128];
 	
-	do {
-		
-		if (read (sock, &fun, sizeof(int)) != sizeof(int)) {
-			perror("ERROR: read fun");
-			return NULL;
-		}
-		
-		//Controla si el client esta mes actualitzat que el servidor, perque no peti
-		res = 1;
-		switch(fun) {
-			case LS:
-			case CD:
-			case MKDIR:
-			case GET:
-			case WHOAMI:
-			case STAT:
-				res = 0;
-				break;
-		}
-		
-		if(res == 0) {
-			switch (fun) {
+	if (read (sock, &usuari, sizeof(usuari)) != sizeof(usuari)){
+		perror("ERROR: read usuari");
+		return NULL;
+	}
+	
+	if (read (sock, &contrasenya, sizeof(contrasenya)) != sizeof(contrasenya)){
+		perror("ERROR: read contrasenya");
+		return NULL;
+	}
+	
+	login_correcte = consulta_usuaris_mysql(usuari, contrasenya);
+	
+	printf("login_correcte: %d\n",login_correcte);
+	
+	if (write (sock, &login_correcte, sizeof(login_correcte)) != sizeof(login_correcte)){
+		perror("ERROR: write login_correcte");
+		return NULL;
+	}
+	
+	if (login_correcte == 1) {
+	
+		pthread_mutex_lock(&mut);
+		(*client).login = usuari;
+		pthread_mutex_unlock(&mut);
+	
+		do {
+			
+			if (read (sock, &fun, sizeof(int)) != sizeof(int)) {
+				perror("ERROR: read fun");
+				return NULL;
+			}
+			
+			//Controla si el client esta mes actualitzat que el servidor, perque no peti
+			res = 1;
+			switch(fun) {
 				case LS:
-					codi_op_ls(sock, data);
-					break;
 				case CD:
-					codi_op_cd(sock, data);
-					break;
 				case MKDIR:
-					codi_op_mkdir(sock, data);
-					break;
 				case GET:
-					codi_op_get(sock, data);
-					break;
 				case WHOAMI:
-					codi_op_whoami(sock, data);
-					break;
 				case STAT:
-					codi_op_stat(sock, data);
-					break;
-				case EXIT:
+					res = 0;
 					break;
 			}
-		} else {
-			if (fun != EXIT) {
-				printf("Funcionalitat no implementada en el servidor\n");
+			
+			if(res == 0) {
+				switch (fun) {
+					case LS:
+						codi_op_ls(sock, data);
+						break;
+					case CD:
+						codi_op_cd(sock, data);
+						break;
+					case MKDIR:
+						codi_op_mkdir(sock, data);
+						break;
+					case GET:
+						codi_op_get(sock, data);
+						break;
+					case WHOAMI:
+						codi_op_whoami(sock, data);
+						break;
+					case STAT:
+						codi_op_stat(sock, data);
+						break;
+					case EXIT:
+						break;
+				}
+			} else {
+				if (fun != EXIT) {
+					printf("Funcionalitat no implementada en el servidor\n");
+				}
 			}
-		}
-		
-	} while (fun != EXIT);
+			
+		} while (fun != EXIT);
+	
+	}
 	
 	close(sock);
 	

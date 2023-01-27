@@ -272,6 +272,10 @@ int main (int argc, char **argv) {
 	struct sockaddr_in client;
 	int fd, sock;
 	int fun;
+	char usuari[45];
+	char contrasenya[128];
+	char login_ok = 'n';
+	int login_correcte;
 	
 	//Socket
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -291,41 +295,74 @@ int main (int argc, char **argv) {
 		return 0;
 	}
 	
+	netejar_pantalla();
+	
 	do {
-		fun = get_menu();
-		if ((write (fd, &fun, sizeof(int))) != sizeof(int)){
-			perror("ERROR: write fun");
-			return -1;
-		}
-		switch (fun) {
-			case LS:
-				codi_op_ls(fd);
-				break;
-			case CD:
-				codi_op_cd(fd);
-				break;
-			case MKDIR:
-				codi_op_mkdir(fd);
-				break;
-			case GET:
-				codi_op_get(fd);
-				break;
-			case WHOAMI:
-				codi_op_whoami(fd);
-				break;
-			case STAT:
-				codi_op_stat(fd);
-				break;
-			case EXIT:
-				break;
-		}
-		
-		if (fun != EXIT) {
-			__fpurge(stdin);
-			getchar();
-		}
-		
-	} while (fun != EXIT);
+		printf("LOGIN\n");
+		printf("Usuari: ");
+		scanf("%s", usuari);
+		printf("Contrasenya: ");
+		scanf("%s", contrasenya);
+		printf("L'usuari es: \"%s\" i la contrasenya es: \"%s\", es correcte? (s/n): ", usuari, contrasenya);
+		__fpurge(stdin);
+		scanf("%c", &login_ok);
+	} while (login_ok != 's');
+	
+	
+	if (write (fd, &usuari, sizeof(usuari)) != sizeof(usuari)){
+		perror("ERROR: write recurs");
+		return -1;
+	}
+	
+	if (write (fd, &contrasenya, sizeof(contrasenya)) != sizeof(contrasenya)){
+		perror("ERROR: write recurs");
+		return -1;
+	}
+	
+	if (read (fd, &login_correcte, sizeof(login_correcte)) != sizeof(login_correcte)){
+		perror("ERROR: read login_correcte");
+		return -1;
+	}
+	
+	if (login_correcte == 1) {
+	
+		do {
+			fun = get_menu();
+			if ((write (fd, &fun, sizeof(int))) != sizeof(int)){
+				perror("ERROR: write fun");
+				return -1;
+			}
+			switch (fun) {
+				case LS:
+					codi_op_ls(fd);
+					break;
+				case CD:
+					codi_op_cd(fd);
+					break;
+				case MKDIR:
+					codi_op_mkdir(fd);
+					break;
+				case GET:
+					codi_op_get(fd);
+					break;
+				case WHOAMI:
+					codi_op_whoami(fd);
+					break;
+				case STAT:
+					codi_op_stat(fd);
+					break;
+				case EXIT:
+					break;
+			}
+			
+			if (fun != EXIT) {
+				__fpurge(stdin);
+				getchar();
+			}
+			
+		} while (fun != EXIT);
+	
+	}
 	
 	close(fd);
 	

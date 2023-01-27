@@ -1,0 +1,2 @@
+gcc -o server $(mysql_config --cflags) server.c $(mysql_config --libs) -lpthread
+gcc -o client $(mysql_config --cflags) client.c $(mysql_config --libs) -lpthread
