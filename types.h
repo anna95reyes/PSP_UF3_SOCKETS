@@ -20,8 +20,10 @@
 #define PORT 1115
 #define BACK_LOG 10
 #define PATH "/mnt/hgfs/UF3/1_Sockets/Practica"
+#define PATH_FITXER_IPS "/mnt/hgfs/UF3/1_Sockets/Practica/ips_valides.txt"
 #define PATH_SERVER "/mnt/hgfs/UF3/1_Sockets/Practica/directori_server"
 #define PATH_CLIENT "/mnt/hgfs/UF3/1_Sockets/Practica/directori_client"
+#define PATH_LOG "/mnt/hgfs/UF3/1_Sockets/Practica/log.txt"
 
 #define EXIT 0
 #define LS 1

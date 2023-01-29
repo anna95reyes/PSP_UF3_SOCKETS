@@ -41,6 +41,7 @@ int codi_op_ls(int sock){
 	char path_nom_arxiu_temporal[255];
 
 	netejar_pantalla();
+	
 	if (read (sock, &nom_arxiu_temporal, sizeof(nom_arxiu_temporal)) != sizeof(nom_arxiu_temporal)) {
 		perror("read nom_arxiu_temporal");
 		return 1;
@@ -121,7 +122,7 @@ int codi_op_mkdir(int sock){
 	netejar_pantalla();
 	
 	do {
-		printf("Nom del direcoti a creaer: ");
+		printf("Nom del directori a creaer: ");
 		scanf("%s", nom_directori);
 		printf("El nom del directori a crear es: \"%s\", es correcte? (s/n): ", nom_directori);
 		__fpurge(stdin);
@@ -285,6 +286,7 @@ int main (int argc, char **argv) {
 	char contrasenya[128];
 	char login_ok = 'n';
 	int login_correcte;
+	int ip_correcte;
 	
 	//Socket
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -301,76 +303,88 @@ int main (int argc, char **argv) {
 	//Connect
 	if ((sock = connect(fd, (struct sockaddr *)&client, sizeof(client))) < 0) {
 		perror("ERROR: connect");
-		return 0;
-	}
-	
-	netejar_pantalla();
-	
-	do {
-		printf("LOGIN\n");
-		printf("Usuari: ");
-		scanf("%s", usuari);
-		printf("Contrasenya: ");
-		scanf("%s", contrasenya);
-		printf("L'usuari es: \"%s\" i la contrasenya es: \"%s\", es correcte? (s/n): ", usuari, contrasenya);
-		__fpurge(stdin);
-		scanf("%c", &login_ok);
-	} while (login_ok != 's');
-	
-	
-	if (write (fd, &usuari, sizeof(usuari)) != sizeof(usuari)){
-		perror("ERROR: write recurs");
 		return -1;
 	}
 	
-	if (write (fd, &contrasenya, sizeof(contrasenya)) != sizeof(contrasenya)){
-		perror("ERROR: write recurs");
+	if (read (fd, &ip_correcte, sizeof(ip_correcte)) != sizeof(ip_correcte)){
+		perror("ERROR: read ip_correcte");
 		return -1;
 	}
 	
-	if (read (fd, &login_correcte, sizeof(login_correcte)) != sizeof(login_correcte)){
-		perror("ERROR: read login_correcte");
-		return -1;
-	}
+	if (ip_correcte == 1) {
 	
-	if (login_correcte == 1) {
+		netejar_pantalla();
 	
 		do {
-			fun = get_menu();
-			if ((write (fd, &fun, sizeof(int))) != sizeof(int)){
-				perror("ERROR: write fun");
-				return -1;
-			}
-			switch (fun) {
-				case LS:
-					codi_op_ls(fd);
-					break;
-				case CD:
-					codi_op_cd(fd);
-					break;
-				case MKDIR:
-					codi_op_mkdir(fd);
-					break;
-				case GET:
-					codi_op_get(fd);
-					break;
-				case WHOAMI:
-					codi_op_whoami(fd);
-					break;
-				case STAT:
-					codi_op_stat(fd);
-					break;
-				case EXIT:
-					break;
-			}
-			
-			if (fun != EXIT) {
-				__fpurge(stdin);
-				getchar();
-			}
-			
-		} while (fun != EXIT);
-	
+			printf("LOGIN\n");
+			printf("Usuari: ");
+			scanf("%s", usuari);
+			printf("Contrasenya: ");
+			scanf("%s", contrasenya);
+			printf("L'usuari es: \"%s\" i la contrasenya es: \"%s\", es correcte? (s/n): ", usuari, contrasenya);
+			__fpurge(stdin);
+			scanf("%c", &login_ok);
+		} while (login_ok != 's');
+		
+		
+		if (write (fd, &usuari, sizeof(usuari)) != sizeof(usuari)){
+			perror("ERROR: write recurs");
+			return -1;
+		}
+		
+		if (write (fd, &contrasenya, sizeof(contrasenya)) != sizeof(contrasenya)){
+			perror("ERROR: write recurs");
+			return -1;
+		}
+		
+		if (read (fd, &login_correcte, sizeof(login_correcte)) != sizeof(login_correcte)){
+			perror("ERROR: read login_correcte");
+			return -1;
+		}
+		
+		if (login_correcte == 1) {
+		
+			do {
+				fun = get_menu();
+				if ((write (fd, &fun, sizeof(int))) != sizeof(int)){
+					perror("ERROR: write fun");
+					return -1;
+				}
+				switch (fun) {
+					case LS:
+						codi_op_ls(fd);
+						break;
+					case CD:
+						codi_op_cd(fd);
+						break;
+					case MKDIR:
+						codi_op_mkdir(fd);
+						break;
+					case GET:
+						codi_op_get(fd);
+						break;
+					case WHOAMI:
+						codi_op_whoami(fd);
+						break;
+					case STAT:
+						codi_op_stat(fd);
+						break;
+					case EXIT:
+						break;
+				}
+				
+				if (fun != EXIT) {
+					__fpurge(stdin);
+					getchar();
+				}
+				
+			} while (fun != EXIT);
+		
+		} else {
+			perror("ERROR: LOGIN INCORRECTE");
+		}
+	} else {
+		perror("ERROR: IP NO AUTORITZADA");
 	}
 	
 	close(fd);

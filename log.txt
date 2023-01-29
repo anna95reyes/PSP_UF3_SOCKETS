@@ -1,0 +1,34 @@
+29/01/2023 19:46:06 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+29/01/2023 19:46:06 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
+29/01/2023 19:46:06 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - Funcio: cd
+29/01/2023 19:46:52 -- ERROR --> IP: 127.0.0.1 - Usuari: psp - Funcio: cd
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - Funcio: cd
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - Funcio: mkdir
+29/01/2023 19:46:52 -- ERROR --> IP: 127.0.0.1 - Usuari: psp - Funcio: mkdir
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - Funcio: get
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - Funcio: get
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - Funcio: whoami
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - Funcio: stat
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - Funcio: stat
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - Funcio: stat
+29/01/2023 19:46:52 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT
+29/01/2023 19:52:23 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+29/01/2023 19:52:23 -- IP: 127.0.0.1 - Usuari: psp - Funcio: cd
+29/01/2023 19:52:23 -- ERROR --> IP: 127.0.0.1 - Usuari: psp - Funcio: cd
+29/01/2023 19:52:23 -- IP: 127.0.0.1 - Usuari: psp - Funcio: cd
+29/01/2023 19:52:23 -- IP: 127.0.0.1 - Usuari: psp - Funcio: mkdir
+29/01/2023 19:52:23 -- ERROR --> IP: 127.0.0.1 - Usuari: psp - Funcio: mkdir
+29/01/2023 19:52:23 -- IP: 127.0.0.1 - Usuari: psp - Funcio: get
+29/01/2023 19:52:23 -- ERROR --> IP: 127.0.0.1 - Usuari: psp - Funcio: get
+29/01/2023 19:52:23 -- IP: 127.0.0.1 - Usuari: psp - Funcio: whoami
+29/01/2023 19:52:23 -- IP: 127.0.0.1 - Usuari: psp - Funcio: stat
+29/01/2023 19:52:23 -- IP: 127.0.0.1 - Usuari: psp - Funcio: stat
+29/01/2023 19:52:23 -- ERROR --> IP: 127.0.0.1 - Usuari: psp - Funcio: stat
+29/01/2023 19:52:23 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT
+29/01/2023 19:55:27 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+29/01/2023 19:55:27 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
+29/01/2023 19:55:27 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT
+29/01/2023 19:55:40 -- ERROR --> IP: 127.0.0.1 - Usuari: aaa - LOGIN INCORRECTE

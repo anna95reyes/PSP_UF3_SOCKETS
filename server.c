@@ -10,6 +10,7 @@ typedef struct {
 	pthread_t th; //thread que aten al client
 	int estat; //saber en quin estat esta la cela per saber si es poden atendre mes clients
 	char login[45];
+	char ip[20];
 } t_client;
 
 
@@ -24,7 +25,7 @@ void construir_ruta (char * ruta_desti, char * path, char * ruta_origen) {
 	strcat(ruta_desti, ruta_origen);
 }
 
-int obtenir_data_hora_actuals(char * nom_arxiu_temporal){
+int obtenir_data_hora_actuals(char * hora_actual){
 	time_t t = time(&t);
 	struct tm *local_time = localtime(&t);
 	char data_hora[30];
@@ -37,11 +38,31 @@ int obtenir_data_hora_actuals(char * nom_arxiu_temporal){
     minutes = (*local_time).tm_min;
     seconds = (*local_time).tm_sec;
  
-	sprintf(data_hora, "%02d%02d%d%02d%02d%02d", year, month, day, hours, minutes, seconds);
+	sprintf(data_hora, "%d%02d%02d%02d%02d%02d", year, month, day, hours, minutes, seconds);
 	
-	strcpy (nom_arxiu_temporal, data_hora);
+	strcpy (hora_actual, data_hora);
 	
-	return strlen(nom_arxiu_temporal);
+	return strlen(hora_actual);
+}
+
+int obtenir_data_hora_actuals_formatada (char * hora_actual) {
+	time_t t = time(&t);
+	struct tm *local_time = localtime(&t);
+	char data_hora[30];
+	int hours, minutes, seconds, day, month, year;
+	
+	year = (*local_time).tm_year + 1900;
+	month = (*local_time).tm_mon + 1;
+	day = (*local_time).tm_mday;
+	hours = (*local_time).tm_hour;
+    minutes = (*local_time).tm_min;
+    seconds = (*local_time).tm_sec;
+ 
+	sprintf(data_hora, "%02d/%02d/%d %02d:%02d:%02d", day, month, year, hours, minutes, seconds);
+	
+	strcpy (hora_actual, data_hora);
+	
+	return strlen(hora_actual);
 }
 
 long get_file_size(char *filename) {
@@ -102,6 +123,27 @@ int consulta_usuaris_mysql(char * usuari, char * contrasenya){
 }
 
 
+int consulta_ip_valida (char *ip) {
+	
+	FILE * fitxer;
+	char llinea_llegida[20];
+	
+	if ((fitxer = fopen(PATH_FITXER_IPS, "r+")) < 0) {
+		perror("obrint arxiu ips");
+		return -1;
+	}
+	
+	while (fscanf(fitxer, "%[^\n] ", llinea_llegida) != EOF) {
+		if (strcmp (ip, llinea_llegida) == 0) {
+			return 1;
+		}
+	}
+	
+	fclose(fitxer);
+	
+	return 0;
+}
+
 int codi_op_ls(int sock, int *data) {
 
 	DIR * carpeta;
@@ -142,6 +184,8 @@ int codi_op_ls(int sock, int *data) {
 		perror("ERROR: write name file nom_arxiu_temporal");
 		return -1;
 	}
+	
+	return 0;
 	
 }
 
@@ -192,6 +236,8 @@ int codi_op_cd(int sock, int *data) {
 		printf("PATH ACTUAL: %s\n", path_relatiu);
     }
     
+    return 0;
+    
 }
 
 int codi_op_mkdir(int sock, int *data) {
@@ -202,7 +248,7 @@ int codi_op_mkdir(int sock, int *data) {
 
 	if (read (sock, &nom_directori, sizeof(nom_directori)) != sizeof(nom_directori)) {
 		perror("ERROR: read nom directori");
-		return 1;
+		return -1;
 	}
 	
 	construir_ruta (directori, path_relatiu, nom_directori);
@@ -219,6 +265,7 @@ int codi_op_mkdir(int sock, int *data) {
 		return -1;
 	}
 	
+	return 0;
 }
 
 int codi_op_get(int sock, int *data) {
@@ -238,7 +285,7 @@ int codi_op_get(int sock, int *data) {
 
 	if (read (sock, &nom_arxiu_peticio, sizeof(nom_arxiu_peticio)) != sizeof(nom_arxiu_peticio)) {
 		perror("ERROR: read nom directori");
-		return 1;
+		return -1;
 	}
 	
 	carpeta = opendir(path_relatiu);
@@ -282,10 +329,11 @@ int codi_op_get(int sock, int *data) {
 			size_llegit += sizeof(text);
 		}
 		
-		
-		
+	} else {
+		return -1;
 	}
 	
+	return 0;
 }
 
 int codi_op_whoami(int sock, int *data) {
@@ -297,9 +345,10 @@ int codi_op_whoami(int sock, int *data) {
 	
 	if (write (sock, &login, sizeof(login)) != sizeof(login)) {
 		perror("ERROR: read nom directori");
-		return 1;
+		return -1;
 	}
 	
+	return 0;
 }
 
 int isFileOrDirectory(char* recurs) {
@@ -369,7 +418,6 @@ int codi_op_stat(int sock, int *data) {
 	
 	construir_ruta (path_recurs, PATH_SERVER, recurs);
 	if (tipus_recurs != -1) {
-	
 		if (tipus_recurs == 1) {
 			mida = get_file_size(path_recurs);
 			if (write (sock, &mida, sizeof(mida)) != sizeof(mida)){
@@ -378,9 +426,26 @@ int codi_op_stat(int sock, int *data) {
 			}
 		}
 		
+	} else {
+		return -1;
 	}
 	
+	return 0;
 	
+}
+
+int escriure_en_log(char * text) {
+
+	FILE * arxiu_log;
+	
+	if ((arxiu_log = fopen(PATH_LOG, "a+")) < 0) {
+		perror("obrint log");
+		return -1;
+	}
+	
+	fputs (text, arxiu_log);
+	
+	fclose(arxiu_log);
 }
 
 void *atendre_client (void *data) {
@@ -390,85 +455,146 @@ void *atendre_client (void *data) {
 	int res;
 	int fun;
 	int login_correcte;
+	int ip_correcte;
 	char usuari[45];
 	char contrasenya[128];
+	char ip[20];
+	char data_hora_actual[50];
+	char text[255];
+	char funcio[20];
+	int funcio_valida;
 	
-	if (read (sock, &usuari, sizeof(usuari)) != sizeof(usuari)){
-		perror("ERROR: read usuari");
+	obtenir_data_hora_actuals_formatada(data_hora_actual);
+	
+	strcpy (ip, (*client).ip);
+	ip_correcte = consulta_ip_valida(ip);
+	
+	if (write (sock, &ip_correcte, sizeof(ip_correcte)) != sizeof(ip_correcte)){
+		perror("ERROR: write ip_correcte");
 		return NULL;
 	}
 	
-	if (read (sock, &contrasenya, sizeof(contrasenya)) != sizeof(contrasenya)){
-		perror("ERROR: read contrasenya");
-		return NULL;
-	}
+	if (ip_correcte == 1) {
 	
-	login_correcte = consulta_usuaris_mysql(usuari, contrasenya);
-	
-	printf("login_correcte: %d\n",login_correcte);
-	
-	if (write (sock, &login_correcte, sizeof(login_correcte)) != sizeof(login_correcte)){
-		perror("ERROR: write login_correcte");
-		return NULL;
-	}
-	
-	if (login_correcte == 1) {
-	
-		pthread_mutex_lock(&mut);
-		strcpy ((*client).login, usuari);
-		pthread_mutex_unlock(&mut);
-	
-		do {
+		if (read (sock, &usuari, sizeof(usuari)) != sizeof(usuari)){
+			perror("ERROR: read usuari");
+			return NULL;
+		}
+		
+		if (read (sock, &contrasenya, sizeof(contrasenya)) != sizeof(contrasenya)){
+			perror("ERROR: read contrasenya");
+			return NULL;
+		}
+		
+		login_correcte = consulta_usuaris_mysql(usuari, contrasenya);
+		
+		if (write (sock, &login_correcte, sizeof(login_correcte)) != sizeof(login_correcte)){
+			perror("ERROR: write login_correcte");
+			return NULL;
+		}
+		
+		if (login_correcte == 1) {
+		
+			pthread_mutex_lock(&mut);
+			strcpy ((*client).login, usuari);
+			pthread_mutex_unlock(&mut);
 			
-			if (read (sock, &fun, sizeof(int)) != sizeof(int)) {
-				perror("ERROR: read fun");
-				return NULL;
-			}
-			
-			//Controla si el client esta mes actualitzat que el servidor, perque no peti
-			res = 1;
-			switch(fun) {
-				case LS:
-				case CD:
-				case MKDIR:
-				case GET:
-				case WHOAMI:
-				case STAT:
-					res = 0;
-					break;
-			}
-			
-			if(res == 0) {
-				switch (fun) {
+			pthread_mutex_lock(&mut);
+			sprintf(text, "%s -- IP: %s - Usuari: %s - LOGIN\n", data_hora_actual, ip, usuari);
+			escriure_en_log(text);
+			pthread_mutex_unlock(&mut);
+		
+			do {
+				
+				if (read (sock, &fun, sizeof(int)) != sizeof(int)) {
+					perror("ERROR: read fun");
+					return NULL;
+				}
+				
+				//Controla si el client esta mes actualitzat que el servidor, perque no peti
+				res = 1;
+				switch(fun) {
 					case LS:
-						codi_op_ls(sock, data);
-						break;
 					case CD:
-						codi_op_cd(sock, data);
-						break;
 					case MKDIR:
-						codi_op_mkdir(sock, data);
-						break;
 					case GET:
-						codi_op_get(sock, data);
-						break;
 					case WHOAMI:
-						codi_op_whoami(sock, data);
-						break;
 					case STAT:
-						codi_op_stat(sock, data);
-						break;
-					case EXIT:
+						res = 0;
 						break;
 				}
-			} else {
-				if (fun != EXIT) {
-					printf("Funcionalitat no implementada en el servidor\n");
+				
+				if(res == 0) {
+					switch (fun) {
+						case LS:
+							funcio_valida = codi_op_ls(sock, data);
+							strcpy (funcio, "ls");
+							break;
+						case CD:
+							funcio_valida = codi_op_cd(sock, data);
+							strcpy (funcio, "cd");
+							break;
+						case MKDIR:
+							funcio_valida = codi_op_mkdir(sock, data);
+							strcpy (funcio, "mkdir");
+							break;
+						case GET:
+							funcio_valida = codi_op_get(sock, data);
+							strcpy (funcio, "get");
+							break;
+						case WHOAMI:
+							funcio_valida = codi_op_whoami(sock, data);
+							strcpy (funcio, "whoami");
+							break;
+						case STAT:
+							funcio_valida = codi_op_stat(sock, data);
+							strcpy (funcio, "stat");
+							break;
+						case EXIT:
+							break;
+					}
+					
+					if (funcio_valida == -1) {
+						pthread_mutex_lock(&mut);
+						sprintf(text, "%s -- ERROR --> IP: %s - Usuari: %s - Funcio: %s\n", data_hora_actual, ip, usuari, funcio);
+						escriure_en_log(text);
+						pthread_mutex_unlock(&mut);
+					} else {
+						pthread_mutex_lock(&mut);
+						sprintf(text, "%s -- IP: %s - Usuari: %s - Funcio: %s\n", data_hora_actual, ip, usuari, funcio);
+						escriure_en_log(text);
+						pthread_mutex_unlock(&mut);
+					}
+				} else {
+					if (fun != EXIT) {
+						printf("Funcionalitat no implementada en el servidor\n");
+						pthread_mutex_lock(&mut);
+						sprintf(text, "%s -- ERROR --> IP: %s - Usuari: %s - FUNCIO NO IMPLEMENTADA\n", data_hora_actual, ip, usuari);
+						escriure_en_log(text);
+						pthread_mutex_unlock(&mut);
+					} else {
+						pthread_mutex_lock(&mut);
+						sprintf(text, "%s -- IP: %s - Usuari: %s - LOGOUT\n", data_hora_actual, ip, usuari);
+						escriure_en_log(text);
+						pthread_mutex_unlock(&mut);
+					}
 				}
-			}
-			
-		} while (fun != EXIT);
-	
+				
+			} while (fun != EXIT);
+		
+		} else {
+			//login
+			pthread_mutex_lock(&mut);
+			sprintf(text, "%s -- ERROR --> IP: %s - Usuari: %s - LOGIN INCORRECTE\n", data_hora_actual, ip, usuari);
+			escriure_en_log(text);
+			pthread_mutex_unlock(&mut);
+		}
+	} else {
+		//ip
+		pthread_mutex_lock(&mut);
+		sprintf(text, "%s -- ERROR --> IP: %s - IP NO AUTORITZADA\n", data_hora_actual, ip);
+		escriure_en_log(text);
+		pthread_mutex_unlock(&mut);
 	}
 	
 	close(sock);
@@ -502,13 +628,16 @@ int main (int argc, char **argv) {
 	t_client clients[MAX_CLIENTS];
 	struct sockaddr_in server, client;
 	int sock, len, pos;
+	struct sockaddr_in *addr_in;
+	char *ip;
+	
 	
 	inicialitzar_clients(clients);
 	
 	//Socket
 	if ((fd = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("ERROR: socket");
-		return 1;
+		return -1;
 	}
 	
 	memset(&server, 0, sizeof(server));
@@ -520,13 +649,13 @@ int main (int argc, char **argv) {
 	//Bind
 	if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
 		perror("ERROR: bind");
-		return 1;
+		return -1;
 	}
 	
 	//Listen
 	if (listen(fd, BACK_LOG) < 0) {
 		perror("ERROR: listen");
-		return 1;
+		return -1;
 	}
 	
 	for (;;) {
@@ -539,8 +668,11 @@ int main (int argc, char **argv) {
 		
 		if ((sock = accept(fd, (struct sockaddr*)&client, &len)) < 0) {
 			perror("ERROR: accept");
-			return 1;
+			return -1;
 		}
+		
+		addr_in = (struct sockaddr_in *)&client;
+		ip = inet_ntoa(addr_in->sin_addr);
 		
 		// Comprovacio per saber si puc atendre al client
 		pthread_mutex_lock (&mut); 
@@ -548,6 +680,7 @@ int main (int argc, char **argv) {
 			pos = espai_lliure(clients);
 			clients[pos].estat = 1;
 			clients[pos].socket = sock;
+			strcpy (clients[pos].ip, ip);
 			num_clients++;
 		}
 		pthread_mutex_unlock (&mut); 
