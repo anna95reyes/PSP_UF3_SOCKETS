@@ -214,7 +214,16 @@ int codi_op_get(int sock){
 
 int codi_op_whoami(int sock){
 
+	char login[45];
+
 	netejar_pantalla();
+	
+	if (read (sock, &login, sizeof(login)) != sizeof(login)) {
+		perror("ERROR: read nom directori");
+		return 1;
+	}
+	
+	printf("Usuari connectat: %s\n", login);
 }
 
 int codi_op_stat(int sock){

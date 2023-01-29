@@ -290,7 +290,15 @@ int codi_op_get(int sock, int *data) {
 
 int codi_op_whoami(int sock, int *data) {
 	
+	t_client *client = (t_client *)data;
+	char login[45];
 	
+	strcpy (login, (*client).login);
+	
+	if (write (sock, &login, sizeof(login)) != sizeof(login)) {
+		perror("ERROR: read nom directori");
+		return 1;
+	}
 	
 }
 
@@ -407,7 +415,7 @@ void *atendre_client (void *data) {
 	if (login_correcte == 1) {
 	
 		pthread_mutex_lock(&mut);
-		(*client).login = usuari;
+		strcpy ((*client).login, usuari);
 		pthread_mutex_unlock(&mut);
 	
 		do {
