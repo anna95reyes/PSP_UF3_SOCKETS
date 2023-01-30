@@ -32,3 +32,7 @@
 29/01/2023 19:55:27 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
 29/01/2023 19:55:27 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT
 29/01/2023 19:55:40 -- ERROR --> IP: 127.0.0.1 - Usuari: aaa - LOGIN INCORRECTE
+30/01/2023 15:02:29 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+30/01/2023 15:02:29 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT
+30/01/2023 15:44:08 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+30/01/2023 15:44:08 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT

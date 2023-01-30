@@ -279,7 +279,7 @@ int codi_op_stat(int sock){
 
 int main (int argc, char **argv) {
 	
-	struct sockaddr_in client;
+	struct sockaddr_in server;
 	int fd, sock;
 	int fun;
 	char usuari[45];
@@ -294,14 +294,14 @@ int main (int argc, char **argv) {
 		return -1;
 	}
 	
-	memset(&client, 0, sizeof(client));
+	memset(&server, 0, sizeof(server));
 	
-	client.sin_family = AF_INET;
-	client.sin_port = htons(PORT);
-	client.sin_addr.s_addr = inet_addr("127.0.0.1");
+	server.sin_family = AF_INET;
+	server.sin_port = htons(PORT);
+	server.sin_addr.s_addr = inet_addr("127.0.0.1");
 	
 	//Connect
-	if ((sock = connect(fd, (struct sockaddr *)&client, sizeof(client))) < 0) {
+	if ((sock = connect(fd, (struct sockaddr *)&server, sizeof(server))) < 0) {
 		perror("ERROR: connect");
 		return -1;
 	}
