@@ -1,3 +1,4 @@
+#include "../../../types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -5,46 +6,30 @@
 #include <cstring>
 #include <string>
 
-#define MAX_CLIENTS 5
-#define PORT 1115
-#define BACK_LOG 10
-#define PATH "/mnt/hgfs/UF3/1_Sockets/Practica"
-#define PATH_FITXER_IPS "/mnt/hgfs/UF3/1_Sockets/Practica/ips_valides.txt"
-#define PATH_SERVER "/mnt/hgfs/UF3/1_Sockets/Practica/directori_server"
-#define PATH_CLIENT "/mnt/hgfs/UF3/1_Sockets/Practica/directori_client"
-#define PATH_LOG "/mnt/hgfs/UF3/1_Sockets/Practica/log.txt"
-#define IP_SERVER "192.168.1.138"
-
-#define EXIT 0
-#define LS 1
-#define CD 2
-#define MKDIR 3
-#define GET 4
-#define WHOAMI 5
-#define STAT 6
-
-using std::cout;
-using std::cin;
-using std::endl;
-using std::string;
+using namespace std;
 
 #pragma comment(lib, "ws2_32.lib")
 
 char path_relatiu[255];
+char SendBuff[512], RecvBuff[512];
 
 void netejar_pantalla() {
 	system("cls");
 }
 
-string construir_ruta(string path, string ruta_origen) {
-	return path + "/" + ruta_origen;
+/*
+void construir_ruta(char* ruta_desti, const char* path, char* ruta_origen) {
+	strcpy(ruta_desti, path);
+	strcat(ruta_desti, "/");
+	strcat(ruta_desti, ruta_origen);
 }
+*/
 
 int get_menu() {
 
 	int fun;
 
-	netejar_pantalla();
+	//netejar_pantalla();
 	cout << "    MENU" << endl;
 	cout << "=============" << endl;
 	cout << "   " << LS << " - LS" << endl;
@@ -61,6 +46,41 @@ int get_menu() {
 	return fun;
 }
 
+int codi_op_ls(SOCKET sock) {
+
+	char nom_arxiu_temporal[30];
+	FILE* fitxer_temporal;
+	char llinea_llegida[255];
+	char path_nom_arxiu_temporal[255];
+
+	netejar_pantalla();
+
+	if (recv(sock, nom_arxiu_temporal, sizeof(nom_arxiu_temporal), 0) != sizeof(nom_arxiu_temporal)) {
+		perror("read nom_arxiu_temporal");
+		return 1;
+	}
+
+	//construir_ruta(path_nom_arxiu_temporal, PATH, nom_arxiu_temporal);
+
+	cout << "nom_arxiu_temporal: " << nom_arxiu_temporal;
+
+	/*if ((fitxer_temporal = fopen(path_nom_arxiu_temporal, "r+")) < 0) {
+		perror("obrint arxiu temporal");
+		return -1;
+	}
+
+	while (fscanf(fitxer_temporal, "%[^\n] ", llinea_llegida) != EOF) {
+		cout << llinea_llegida << endl;
+	}
+
+	fclose(fitxer_temporal);
+	if (remove(path_nom_arxiu_temporal) < 0) {
+		perror("esborrant arxiu temporal");
+		return -1;
+	}*/
+
+}
+
 int main() 
 {
 	WSADATA wsaData;
@@ -68,27 +88,32 @@ int main()
 	struct sockaddr_in server;
 	struct hostent* hp;
 	int resp;
-
+	int fun;
+	char usuari[45];
+	char contrasenya[128];
+	char login_ok = 'n';
+	int login_correcte;
+	int ip_correcte;
 
 	//Inicialitzem la DLL dels sockets
 	if (resp = WSAStartup(MAKEWORD(2, 0), &wsaData)) {
 		cout << "Error al inicialitzar socket" << endl;
-		char c = getchar();
+		getchar();
 		return -1;
 	}
 
 	//Obtenim la IP del servidor... 
 	if (!(hp = (struct hostent*)gethostbyname(IP_SERVER))) {
 		cout << "No s'ha trobat el servidor..." << endl;
-		char c = getchar();
+		getchar();
 		WSACleanup();
 		return WSAGetLastError();
 	}
 
-	// Creació del socket...
+	// socket
 	if ((conn_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
 		cout << "Error al crear el socket" << endl;
-		char c = getchar();
+		getchar();
 		WSACleanup();
 		return WSAGetLastError();
 	}
@@ -98,19 +123,94 @@ int main()
 	server.sin_family = (*hp).h_addrtype;
 	server.sin_port = htons(PORT);
 
-	// Ens connectem al servidor...
+	// connect
 	if (connect(conn_socket, (struct sockaddr*)&server, sizeof(server)) == SOCKET_ERROR) {
 		cout << "Error al conectar-se amb el servidor" << endl;
 		closesocket(conn_socket);
-		char c = getchar();
+		getchar();
 		WSACleanup();
 		return WSAGetLastError();
 	}
 	cout << "Conexio establida amb: " << inet_ntoa(server.sin_addr) << endl;
 
+	if (recv(conn_socket, (char *)&ip_correcte, sizeof(ip_correcte), 0) != sizeof(ip_correcte)) {
+		perror("ERROR: read ip_correcte");
+		return -1;
+	}
+
+	if (ip_correcte == 1) {
+
+		netejar_pantalla();
+
+		do {
+			cout << "LOGIN" << endl;
+			cout << "Usuari: ";
+			cin >> usuari;
+			cout << "Contrasenya: ";
+			cin >> contrasenya;
+			cout << "L'usuari es: " << usuari  << " i la contrasenya es: "<< contrasenya  << ", es correcte? (s/n): ";
+			fflush(stdin);
+			cin >> login_ok;
+		} while (login_ok != 's');
 
 
-	
+		if (send(conn_socket, usuari, sizeof(usuari), 0) != sizeof(usuari)) {
+			perror("ERROR: read ip_correcte");
+			return -1;
+		}
+
+		if (send(conn_socket, contrasenya, sizeof(contrasenya), 0) != sizeof(contrasenya)) {
+			perror("ERROR: write recurs");
+			return -1;
+		}
+
+		if (recv(conn_socket, (char*)&login_correcte, sizeof(login_correcte), 0) != sizeof(login_correcte)) {
+			perror("ERROR: read login_correcte");
+			return -1;
+		}
+
+		if (login_correcte == 1) {
+			do {
+				fun = get_menu();
+
+				if ((send(conn_socket, (char*)&fun, sizeof(int), 0)) != sizeof(int)) {
+					perror("ERROR: write fun");
+					return -1;
+				}
+
+				switch (fun) {
+					case LS:
+						codi_op_ls(conn_socket);
+						break;
+					case CD:
+						//codi_op_cd(conn_socket);
+						break;
+					case MKDIR:
+						//codi_op_mkdir(conn_socket);
+						break;
+					case GET:
+						//codi_op_get(conn_socket);
+						break;
+					case WHOAMI:
+						//codi_op_whoami(conn_socket);
+						break;
+					case STAT:
+						//codi_op_stat(conn_socket);
+						break;
+					case EXIT:
+						break;
+				}
+
+				if (fun != EXIT) {
+					fflush(stdin);
+					getchar();
+				}
+
+			} while (fun != EXIT);
+		}
+
+
+	}
 
 	// Cerramos el socket y liberamos la DLL de sockets
 	closesocket(conn_socket);

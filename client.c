@@ -1,4 +1,21 @@
 #include "types.h"
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdio_ext.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <stdbool.h>
+#include <dirent.h>
+#include <stdint.h>
+#include <fcntl.h>
+#include <mysql/mysql.h>
 
 char path_relatiu[255];
 
