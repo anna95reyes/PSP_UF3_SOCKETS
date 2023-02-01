@@ -209,3 +209,6 @@
 01/02/2023 16:17:56 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
 01/02/2023 16:17:56 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
 01/02/2023 16:17:56 -- ERROR --> IP: 192.168.1.125 - Usuari: psp - Funcio: cd
+01/02/2023 20:39:49 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+01/02/2023 20:39:49 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+01/02/2023 20:39:49 -- IP: 10.200.0.4 - Usuari: psp - LOGOUT

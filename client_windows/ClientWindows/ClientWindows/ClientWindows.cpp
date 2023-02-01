@@ -20,32 +20,9 @@ void netejar_pantalla() {
 
 void construir_ruta(char* ruta_desti, char* path, char* ruta_origen) {
 	
-	/*strcat(ruta_desti, path);
-	strcpy(ruta_desti,  "\\");
-	strcpy(ruta_desti, ruta_origen);*/
-
-	
-	int i = 0;
-	int j = 0;
-
-	while (path[j] != '\0') {
-		ruta_desti[i] = path[j];
-		i++;
-		j++;
-	}
-
-	ruta_desti[i] = '\\';
-	i++;
-
-	j = 0;
-	while (ruta_origen[j] != '\0') {
-		ruta_desti[i] = ruta_origen[j];
-		i++;
-		j++;
-	}
-	
-	ruta_desti[i] = '\0';
-
+	strcpy(ruta_desti, path);
+	strcat(ruta_desti,  "\\");
+	strcat(ruta_desti, ruta_origen);
 }
 
 
