@@ -17,19 +17,43 @@ void netejar_pantalla() {
 	system("cls");
 }
 
-/*
-void construir_ruta(char* ruta_desti, const char* path, char* ruta_origen) {
-	strcpy(ruta_desti, path);
-	strcat(ruta_desti, "/");
-	strcat(ruta_desti, ruta_origen);
+
+void construir_ruta(char* ruta_desti, char* path, char* ruta_origen) {
+	
+	/*strcat(ruta_desti, path);
+	strcpy(ruta_desti,  "\\");
+	strcpy(ruta_desti, ruta_origen);*/
+
+	
+	int i = 0;
+	int j = 0;
+
+	while (path[j] != '\0') {
+		ruta_desti[i] = path[j];
+		i++;
+		j++;
+	}
+
+	ruta_desti[i] = '\\';
+	i++;
+
+	j = 0;
+	while (ruta_origen[j] != '\0') {
+		ruta_desti[i] = ruta_origen[j];
+		i++;
+		j++;
+	}
+	
+	ruta_desti[i] = '\0';
+
 }
-*/
+
 
 int get_menu() {
 
 	int fun;
 
-	//netejar_pantalla();
+	netejar_pantalla();
 	cout << "    MENU" << endl;
 	cout << "=============" << endl;
 	cout << "   " << LS << " - LS" << endl;
@@ -60,11 +84,9 @@ int codi_op_ls(SOCKET sock) {
 		return 1;
 	}
 
-	//construir_ruta(path_nom_arxiu_temporal, PATH, nom_arxiu_temporal);
+	construir_ruta(path_nom_arxiu_temporal, (char*)PATH_WINDOWS, nom_arxiu_temporal);
 
-	cout << "nom_arxiu_temporal: " << nom_arxiu_temporal;
-
-	/*if ((fitxer_temporal = fopen(path_nom_arxiu_temporal, "r+")) < 0) {
+	if ((fitxer_temporal = fopen(path_nom_arxiu_temporal, "r+")) == NULL) {
 		perror("obrint arxiu temporal");
 		return -1;
 	}
@@ -77,11 +99,11 @@ int codi_op_ls(SOCKET sock) {
 	if (remove(path_nom_arxiu_temporal) < 0) {
 		perror("esborrant arxiu temporal");
 		return -1;
-	}*/
-
+	}
+	
 }
 
-int main() 
+int main(int argc, char** argv)
 {
 	WSADATA wsaData;
 	SOCKET conn_socket;
@@ -203,7 +225,8 @@ int main()
 
 				if (fun != EXIT) {
 					fflush(stdin);
-					getchar();
+					cout << endl;
+					system("pause");
 				}
 
 			} while (fun != EXIT);

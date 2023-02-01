@@ -77,3 +77,135 @@
 30/01/2023 17:42:01 -- IP: 192.168.1.111 - Usuari: psp - Funcio: ls
 30/01/2023 17:42:27 -- IP: 192.168.1.111 - Usuari: psp - LOGIN
 30/01/2023 17:42:27 -- IP: 192.168.1.111 - Usuari: psp - Funcio: ls
+30/01/2023 19:46:30 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+30/01/2023 19:46:30 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+30/01/2023 19:47:32 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+30/01/2023 19:47:32 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+30/01/2023 19:51:31 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+30/01/2023 19:51:31 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+30/01/2023 19:53:08 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+30/01/2023 19:53:08 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+30/01/2023 20:06:07 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+30/01/2023 20:06:07 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+30/01/2023 20:10:48 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+30/01/2023 20:10:48 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+31/01/2023 17:22:12 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+31/01/2023 17:22:12 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+31/01/2023 17:22:59 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+31/01/2023 17:22:59 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+31/01/2023 17:22:59 -- IP: 10.200.0.4 - Usuari: psp - LOGOUT
+01/02/2023 14:48:02 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 14:48:02 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 14:48:02 -- IP: 192.168.1.125 - Usuari: psp - LOGOUT
+01/02/2023 14:50:13 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 14:50:13 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 14:50:13 -- IP: 192.168.1.125 - Usuari: psp - LOGOUT
+01/02/2023 14:52:31 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 14:52:31 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 14:55:40 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 14:55:40 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 14:57:46 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 14:57:46 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 14:59:32 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 14:59:32 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:01:39 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:01:39 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:04:59 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:04:59 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:09:56 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:09:56 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:19:46 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:19:46 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:21:08 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:21:08 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:22:04 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:22:04 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:23:39 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:23:39 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:24:34 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:24:34 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:24:57 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:24:57 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:25:59 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:25:59 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:26:47 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:26:47 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:27:43 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:27:43 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:34:35 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:34:35 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:36:29 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:36:29 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:37:23 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:37:23 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:38:35 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:38:35 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:40:02 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:40:02 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:43:12 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:43:12 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:45:48 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:45:48 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:46:08 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:46:08 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:46:28 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:46:28 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:46:55 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:46:55 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:48:33 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:48:33 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:50:23 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:50:23 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:51:09 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:51:09 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:54:10 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:54:10 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:54:51 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:54:51 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:56:19 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:56:19 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 15:57:13 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 15:57:13 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:02:29 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:02:29 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:04:05 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:04:05 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:04:53 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:04:53 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:06:30 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:06:30 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:07:39 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:07:39 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:08:03 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:08:03 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:08:03 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:08:03 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:08:54 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:08:54 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:09:55 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:09:55 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:10:26 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:10:26 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:11:35 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:11:35 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:12:41 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:12:41 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:12:41 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:12:41 -- IP: 192.168.1.125 - Usuari: psp - LOGOUT
+01/02/2023 16:14:37 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:14:37 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:14:37 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:14:37 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:14:37 -- IP: 192.168.1.125 - Usuari: psp - LOGOUT
+01/02/2023 16:15:15 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:15:15 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:15:15 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:15:15 -- IP: 192.168.1.125 - Usuari: psp - LOGOUT
+01/02/2023 16:16:59 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:16:59 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:17:17 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:17:17 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:17:17 -- IP: 192.168.1.125 - Usuari: psp - LOGOUT
+01/02/2023 16:17:56 -- IP: 192.168.1.125 - Usuari: psp - LOGIN
+01/02/2023 16:17:56 -- IP: 192.168.1.125 - Usuari: psp - Funcio: ls
+01/02/2023 16:17:56 -- ERROR --> IP: 192.168.1.125 - Usuari: psp - Funcio: cd
