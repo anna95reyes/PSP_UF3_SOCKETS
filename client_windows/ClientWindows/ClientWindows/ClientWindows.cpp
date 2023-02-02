@@ -80,6 +80,83 @@ int codi_op_ls(SOCKET sock) {
 	
 }
 
+int codi_op_cd(SOCKET sock) {
+	return 0;
+}
+
+int codi_op_mkdir(SOCKET sock) {
+	return 0;
+}
+
+int codi_op_get(SOCKET sock) {
+	char nom_arxiu[255];
+	char directori_nom_arxiu[255];
+	char arxiu_correcte = 'n';
+	int error;
+	bool trobat;
+	FILE* arxiu;
+	long size_arxiu;
+	long size_llegit = 0;
+	char text[255];
+
+	netejar_pantalla();
+
+	do {
+		cout << "Nom del arxiu amb la extensio : ";
+		cin >> nom_arxiu;
+		cout << "El nom del arxiu es: \"" << nom_arxiu << "\", es correcte? (s/n): ";
+		fflush(stdin);
+		cin >> arxiu_correcte;
+	} while (arxiu_correcte != 's');
+
+	if (send(sock, nom_arxiu, sizeof(nom_arxiu), 0) != sizeof(nom_arxiu)) {
+		perror("ERROR: write nom arxiu");
+		return -1;
+	}
+
+	if (recv(sock, (char*)&trobat, sizeof(bool), 0) != sizeof(bool)) {
+		perror("ERROR: read arxiu trobat");
+		return -1;
+	}
+
+	if (trobat) {
+		construir_ruta(directori_nom_arxiu, (char*)PATH_CLIENT_WINDOWS, nom_arxiu);
+
+		if ((arxiu = fopen(directori_nom_arxiu, "w+")) < 0) {
+			perror("creant arxiu");
+			return -1;
+		}
+
+		if (recv(sock, (char*)&size_arxiu, sizeof(long), 0) != sizeof(long)) {
+			perror("ERROR: read arxiu trobat");
+			return -1;
+		}
+
+		while (size_llegit < size_arxiu) {
+			if (recv(sock, text, sizeof(text), 0) != sizeof(text)) {
+				perror("ERROR: read arxiu trobat");
+				return -1;
+			}
+			fputs(text, arxiu);
+			size_llegit += sizeof(text);
+		}
+
+		if (size_llegit >= size_arxiu) {
+			cout << "Arxiu \"" << nom_arxiu << "\" transferit correctament" << endl;
+		}
+
+		fclose(arxiu);
+
+	}
+	else {
+		perror("ERROR: l'arxiu no existeix");
+	}
+}
+
+int codi_op_whoami(SOCKET sock) {
+	return 0;
+}
+
 int main(int argc, char** argv)
 {
 	WSADATA wsaData;
@@ -188,7 +265,7 @@ int main(int argc, char** argv)
 						//codi_op_mkdir(conn_socket);
 						break;
 					case GET:
-						//codi_op_get(conn_socket);
+						codi_op_get(conn_socket);
 						break;
 					case WHOAMI:
 						//codi_op_whoami(conn_socket);
