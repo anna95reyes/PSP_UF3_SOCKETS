@@ -220,3 +220,37 @@
 02/02/2023 17:27:00 -- IP: 192.168.1.111 - Usuari: psp - Funcio: ls
 02/02/2023 17:27:00 -- IP: 192.168.1.111 - Usuari: psp - Funcio: get
 02/02/2023 17:27:00 -- IP: 192.168.1.111 - Usuari: psp - LOGOUT
+03/02/2023 17:12:28 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+03/02/2023 17:12:28 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT
+03/02/2023 17:13:25 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+03/02/2023 17:13:25 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+03/02/2023 17:13:25 -- IP: 10.200.0.4 - Usuari: psp - Funcio: cd
+03/02/2023 17:13:25 -- IP: 10.200.0.4 - Usuari: psp - Funcio: cd
+03/02/2023 17:13:25 -- IP: 10.200.0.4 - Usuari: psp - Funcio: mkdir
+03/02/2023 17:13:25 -- IP: 10.200.0.4 - Usuari: psp - Funcio: get
+03/02/2023 17:13:25 -- IP: 10.200.0.4 - Usuari: psp - Funcio: whoami
+03/02/2023 17:13:25 -- IP: 10.200.0.4 - Usuari: psp - Funcio: whoami
+03/02/2023 17:13:25 -- IP: 10.200.0.4 - Usuari: psp - Funcio: stat
+03/02/2023 17:13:25 -- IP: 10.200.0.4 - Usuari: psp - Funcio: stat
+03/02/2023 17:17:54 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+03/02/2023 17:17:54 -- IP: 10.200.0.4 - Usuari: psp - Funcio: whoami
+03/02/2023 17:17:54 -- IP: 10.200.0.4 - Usuari: psp - Funcio: stat
+03/02/2023 17:17:54 -- IP: 10.200.0.4 - Usuari: psp - Funcio: whoami
+03/02/2023 17:17:54 -- IP: 10.200.0.4 - Usuari: psp - Funcio: stat
+03/02/2023 17:18:59 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+03/02/2023 17:18:59 -- IP: 10.200.0.4 - Usuari: psp - Funcio: whoami
+03/02/2023 17:18:59 -- IP: 10.200.0.4 - Usuari: psp - Funcio: stat
+03/02/2023 17:18:59 -- IP: 10.200.0.4 - Usuari: psp - Funcio: stat
+03/02/2023 17:18:59 -- IP: 10.200.0.4 - Usuari: psp - LOGOUT
+03/02/2023 17:27:26 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+03/02/2023 17:28:19 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+03/02/2023 17:28:19 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT
+03/02/2023 17:29:00 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+03/02/2023 17:29:00 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
+03/02/2023 17:29:28 -- IP: 10.200.0.4 - Usuari: psp - LOGIN
+03/02/2023 17:29:28 -- IP: 10.200.0.4 - Usuari: psp - Funcio: ls
+03/02/2023 17:29:28 -- IP: 10.200.0.4 - Usuari: psp - LOGOUT
+03/02/2023 17:30:01 -- IP: 10.200.0.4 - Usuari: alumne - LOGIN
+03/02/2023 17:30:01 -- IP: 10.200.0.4 - Usuari: alumne - Funcio: ls
+03/02/2023 17:30:01 -- IP: 10.200.0.4 - Usuari: alumne - LOGOUT
+03/02/2023 17:29:00 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT

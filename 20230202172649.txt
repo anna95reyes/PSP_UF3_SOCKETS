@@ -1,5 +1,0 @@
-.
-..
-arxiu.txt
-carpeta1
-prova

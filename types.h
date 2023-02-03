@@ -6,7 +6,7 @@
 #define PATH_SERVER "/mnt/hgfs/UF3/1_Sockets/Practica/directori_server"
 #define PATH_CLIENT "/mnt/hgfs/UF3/1_Sockets/Practica/directori_client"
 #define PATH_LOG "/mnt/hgfs/UF3/1_Sockets/Practica/log.txt"
-#define IP_SERVER "192.168.1.153" //"10.200.2.4"
+#define IP_SERVER "10.200.2.4" //"192.168.1.153"
 
 #define PATH_WINDOWS "C:\\Users\\anna9\\Documents\\ESTUDIOS\\DAM\\2022-2023\\M09-PSP\\UF3\\1_Sockets\\Practica"
 #define PATH_SERVER_WINDOWS "C:\\Users\\anna9\\Documents\\ESTUDIOS\\DAM\\2022-2023\\M09-PSP\\UF3\\1_Sockets\\Practica\\directori_server"

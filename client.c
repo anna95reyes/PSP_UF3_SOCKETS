@@ -289,7 +289,7 @@ int codi_op_stat(int sock){
 		}
 		
 	} else {
-		printf("Recurs no trobat");
+		printf("Recurs no trobat\n");
 	}
 	
 }

@@ -239,7 +239,7 @@ int codi_op_cd(int sock, int *data) {
     	if (write (sock, &error, sizeof(error)) != sizeof(error)){
 			perror("ERROR: write path_relatiu");
 		}
-		printf("PATH ACTUAL: %s\n", path_relatiu);
+		//printf("PATH ACTUAL: %s\n", path_relatiu);
     	return -1;
     } else {
     	if (write (sock, &error, sizeof(error)) != sizeof(error)){
@@ -250,7 +250,7 @@ int codi_op_cd(int sock, int *data) {
 			perror("ERROR: write path_absolut");
 		}
 		strcpy (path_relatiu, path_absolut);
-		printf("PATH ACTUAL: %s\n", path_relatiu);
+		//printf("PATH ACTUAL: %s\n", path_relatiu);
     }
     
     return 0;
@@ -404,7 +404,7 @@ int get_directory_size(char *path) {
 	carpeta = opendir(path);
 	if (carpeta != NULL){
 		while((arxiu = readdir(carpeta))){
-			printf("%s - %hu\n", (*arxiu).d_name, (*arxiu).d_reclen);
+			//printf("%s - %hu\n", (*arxiu).d_name, (*arxiu).d_reclen);
 			size += (*arxiu).d_reclen;
 		}
 		closedir(carpeta);
@@ -461,6 +461,31 @@ int escriure_en_log(char * text) {
 	}
 	
 	fputs (text, arxiu_log);
+	printf("%s", text);
+	
+	fclose(arxiu_log);
+}
+
+int netejar_pantalla(){
+	system("clear");
+}
+
+int llegir_del_log() {
+
+	FILE * arxiu_log;
+	char llinea_llegida[255]; 
+	
+	netejar_pantalla();
+	
+	if ((arxiu_log = fopen(PATH_LOG, "r+")) < 0) {
+		perror("obrint log");
+		return -1;
+	}
+	
+	while (fscanf(arxiu_log, "%[^\n] ", llinea_llegida) != EOF) {
+		printf("%s\n", llinea_llegida);
+	}
+	
 	
 	fclose(arxiu_log);
 }
@@ -480,6 +505,8 @@ void *atendre_client (void *data) {
 	char text[255];
 	char funcio[20];
 	int funcio_valida;
+	
+	llegir_del_log();
 	
 	obtenir_data_hora_actuals_formatada(data_hora_actual);
 	
@@ -584,7 +611,7 @@ void *atendre_client (void *data) {
 					}
 				} else {
 					if (fun != EXIT) {
-						printf("Funcionalitat no implementada en el servidor\n");
+						//printf("Funcionalitat no implementada en el servidor\n");
 						pthread_mutex_lock(&mut);
 						sprintf(text, "%s -- ERROR --> IP: %s - Usuari: %s - FUNCIO NO IMPLEMENTADA\n", data_hora_actual, ip, usuari);
 						escriure_en_log(text);

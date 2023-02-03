@@ -81,14 +81,88 @@ int codi_op_ls(SOCKET sock) {
 }
 
 int codi_op_cd(SOCKET sock) {
-	return 0;
+	
+	char path[255];
+	char path_correcte = 'n';
+	char path_absolut[255];
+
+	int error;
+
+
+	netejar_pantalla();
+	do {
+		cout << "Path: ";
+		cin >> path;
+		cout << "El path es: \"" << path << "\", es correcte? (s/n): ";
+		fflush(stdin);
+		cin >> path_correcte;
+	} while (path_correcte != 's');
+
+	if (send(sock, path, sizeof(path), 0) != sizeof(path)) {
+		perror("ERROR: write path");
+		return -1;
+	}
+
+	if (recv(sock, path_relatiu, sizeof(path_relatiu), 0) != sizeof(path_relatiu)) {
+		perror("ERROR: read path_relatiu");
+		return -1;
+	}
+
+	if (recv(sock, (char*)&error, sizeof(error), 0) != sizeof(error)) {
+		perror("ERROR: write path_relatiu");
+		return -1;
+	}
+
+	if (error >= 0) {
+		if (recv(sock, path_absolut, sizeof(path_absolut), 0) != sizeof(path_absolut)) {
+			perror("ERROR: write path_absolut");
+		}
+		cout << "PATH ACTUAL: " << path_absolut << endl;
+
+	}
+	else {
+		perror("ERROR: path erroni");
+		return -1;
+	}
 }
 
 int codi_op_mkdir(SOCKET sock) {
-	return 0;
+	
+	char nom_directori[255];
+	char directori_correcte = 'n';
+	int error;
+
+	netejar_pantalla();
+
+	do {
+		cout << "Nom del directori a creaer: ";
+		cin >> nom_directori;
+		cout << "El nom del directori a crear es: \"" << nom_directori<< "\", es correcte? (s/n): ";
+		fflush(stdin);
+		cin >> directori_correcte;
+	} while (directori_correcte != 's');
+
+	if (send(sock, nom_directori, sizeof(nom_directori), 0) != sizeof(nom_directori)) {
+		perror("ERROR: write nom directori");
+		return -1;
+	}
+
+	if (recv(sock, (char*)&error, sizeof(int), 0) != sizeof(int)) {
+		perror("ERROR: mkdir");
+		return -1;
+	}
+
+	if (error == 0) {
+		cout << "Directori creat correctament" << endl;
+	}
+	else {
+		perror("ERROR: El directori ja existeix");
+	}
+
 }
 
 int codi_op_get(SOCKET sock) {
+	
 	char nom_arxiu[255];
 	char directori_nom_arxiu[255];
 	char arxiu_correcte = 'n';
@@ -154,7 +228,69 @@ int codi_op_get(SOCKET sock) {
 }
 
 int codi_op_whoami(SOCKET sock) {
-	return 0;
+	
+	char login[45];
+
+	netejar_pantalla();
+
+	if (recv(sock, (char*)&login, sizeof(login), 0) != sizeof(login)) {
+		perror("ERROR: read nom directori");
+		return 1;
+	}
+
+	cout << "Usuari connectat: " << login << endl;
+}
+
+int codi_op_stat(SOCKET sock) {
+
+	char recurs[255];
+	char recurs_correcte = 'n';
+	int tipus_recurs;
+	int mida;
+
+	netejar_pantalla();
+
+	do {
+		cout << "Nom del recurs: ";
+		cin >> recurs;
+		cout << "El recurs es: \"" << recurs << "\", es correcte? (s/n): ";
+		fflush(stdin);
+		cin >> recurs_correcte;
+	} while (recurs_correcte != 's');
+
+	if (send(sock, recurs, sizeof(recurs), 0) != sizeof(recurs)) {
+		perror("ERROR: write recurs");
+		return -1;
+	}
+
+	if (recv(sock, (char*)&tipus_recurs, sizeof(tipus_recurs), 0) != sizeof(tipus_recurs)) {
+		perror("ERROR: read tipus_recurs");
+		return -1;
+	}
+
+	if (tipus_recurs != -1) {
+
+		cout << "Tipus: ";
+		if (tipus_recurs == 0) {
+			cout << "Directori" << endl;
+		}
+		else {
+			cout << "Arxiu" << endl;
+
+			if (recv(sock, (char*)&mida, sizeof(mida), 0) != sizeof(mida)) {
+				perror("ERROR: read mida");
+				return -1;
+			}
+
+			cout << "Mida: " << mida << endl;
+
+		}
+
+	}
+	else {
+		cout << "Recurs no trobat" << endl;
+	}
+
 }
 
 int main(int argc, char** argv)
@@ -259,19 +395,19 @@ int main(int argc, char** argv)
 						codi_op_ls(conn_socket);
 						break;
 					case CD:
-						//codi_op_cd(conn_socket);
+						codi_op_cd(conn_socket);
 						break;
 					case MKDIR:
-						//codi_op_mkdir(conn_socket);
+						codi_op_mkdir(conn_socket);
 						break;
 					case GET:
 						codi_op_get(conn_socket);
 						break;
 					case WHOAMI:
-						//codi_op_whoami(conn_socket);
+						codi_op_whoami(conn_socket);
 						break;
 					case STAT:
-						//codi_op_stat(conn_socket);
+						codi_op_stat(conn_socket);
 						break;
 					case EXIT:
 						break;
