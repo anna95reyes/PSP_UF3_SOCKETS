@@ -254,3 +254,19 @@
 03/02/2023 17:30:01 -- IP: 10.200.0.4 - Usuari: alumne - Funcio: ls
 03/02/2023 17:30:01 -- IP: 10.200.0.4 - Usuari: alumne - LOGOUT
 03/02/2023 17:29:00 -- IP: 127.0.0.1 - Usuari: psp - LOGOUT
+03/02/2023 18:17:08 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+03/02/2023 18:17:08 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
+03/02/2023 18:17:08 -- IP: 127.0.0.1 - Usuari: psp - Funcio: cd
+03/02/2023 18:20:11 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+03/02/2023 18:20:11 -- IP: 127.0.0.1 - Usuari: psp - Funcio: stat
+03/02/2023 18:20:11 -- IP: 127.0.0.1 - Usuari: psp - Funcio: stat
+03/02/2023 18:20:11 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
+03/02/2023 18:20:11 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
+03/02/2023 18:20:11 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
+03/02/2023 18:20:11 -- IP: 127.0.0.1 - Usuari: psp - Funcio: cd
+03/02/2023 18:21:45 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+03/02/2023 18:32:56 -- IP: 127.0.0.1 - Usuari: psp - LOGIN
+03/02/2023 18:32:56 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
+03/02/2023 18:32:56 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
+03/02/2023 18:32:56 -- IP: 127.0.0.1 - Usuari: psp - Funcio: cd
+03/02/2023 18:32:56 -- IP: 127.0.0.1 - Usuari: psp - Funcio: ls
